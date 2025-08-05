@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de JavaScript 2025</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .key-term { color: #1D4ED8; font-weight: bold; }
+        .section-title { color: #6B46C1; }
+        .section { border-left: 4px solid #3B82F6; padding-left: 1rem; }
+        pre { background-color: #f4f4f4; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        th, td { border: 1px solid #ddd; padding: 0.75rem; text-align: left; }
+        th { background-color: #3B82F6; color: white; }
+        @media (max-width: 640px) {
+            th, td { font-size: 0.9rem; padding: 0.5rem; }
+            pre { font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+<header class="bg-blue-600 text-white py-8">
+    <div class="container mx-auto px-4">
+        <h1 class="text-4xl font-bold"><i class="fab fa-js mr-2"></i> Guía de JavaScript 2025</h1>
+        <p class="mt-2 text-lg">Conceptos fundamentales de JavaScript para desarrolladores modernos</p>
+    </div>
+</header>
+
+<main class="container mx-auto px-4 py-12">
+    <!-- 1. Cómo ejecutar código JavaScript -->
+    <section class="mb-12 section">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fas fa-code mr-2"></i> 1. Cómo ejecutar código JavaScript</h2>
+        <div class="p-6 bg-white rounded-lg shadow">
+            <h3 class="text-xl font-semibold mb-2">Embebido en HTML</h3>
+            <p>Incluye JavaScript dentro de una etiqueta <span class="key-term">&lt;script&gt;</span> en un archivo HTML.</p>
+            <pre>&lt;script&gt;
+    console.log("Hola, mundo!");
+&lt;/script&gt;</pre>
+
+            <h3 class="text-xl font-semibold mt-4 mb-2">Archivo externo</h3>
+            <p>Enlaza un archivo .js externo usando <span class="key-term">src</span> en la etiqueta <span class="key-term">&lt;script&gt;</span>.</p>
+            <pre>&lt;script src="script.js"&gt;&lt;/script&gt;</pre>
+            <p>Contenido de <span class="key-term">script.js</span>:</p>
+            <pre>console.log("Hola desde un archivo externo!");</pre>
+
+            <h3 class="text-xl font-semibold mt-4 mb-2">Con Node.js</h3>
+            <p>Ejecuta JavaScript en el servidor o localmente con <span class="key-term">Node.js</span>.</p>
+            <pre>node script.js</pre>
+        </div>
+    </section>
+
+    <!-- 2. Qué es una variable -->
+    <section class="mb-12 section">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fas fa-box mr-2"></i> 2. Qué es una variable</h2>
+        <div class="p-6 bg-white rounded-lg shadow">
+            <p>Una <span class="key-term">variable</span> es un contenedor para almacenar datos. Se declara con <span class="key-term">let</span>, <span class="key-term">var</span> o <span class="key-term">const</span>.</p>
+            <pre>let nombre = "Juan";
+var edad = 25;</pre>
+        </div>
+    </section>
+
+    <!-- 3. Qué es una constante -->
+    <section class="mb-12 section">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fas fa-lock mr-2"></i> 3. Qué es una constante</h2>
+        <div class="p-6 bg-white rounded-lg shadow">
+            <p>Una <span class="key-term">constante</span> es una variable cuyo valor no puede reasignarse tras su declaración.</p>
+            <pre>const PI = 3.14159;
+PI = 3.14; // Error: no se puede reasignar</pre>
+        </div>
+    </section>
+
+    <!-- 4. Características de los identificadores de variables -->
+    <section class="mb-12 section">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fas fa-id-card mr-2"></i> 4. Características de los identificadores</h2>
+        <div class="p-6 bg-white rounded-lg shadow">
+            <ul class="list-disc ml-6">
+                <li>Deben comenzar con una letra, <span class="key-term">_</span> o <span class="key-term">$</span>.</li>
+                <li>Pueden contener letras, números, <span class="key-term">_</span> o <span class="key-term">$</span>.</li>
+                <li>No pueden ser <span class="key-term">palabras reservadas</span> (ej. <span class="key-term">if</span>, <span class="key-term">for</span>).</li>
+                <li>Son sensibles a mayúsculas/minúsculas.</li>
+            </ul>
+            <pre>let $nombre = "Ana";
+let _edad = 30;
+let nombreCompleto = "Ana García";</pre>
+        </div>
+    </section>
+
+    <!-- 5. Tipos de datos en JavaScript al 2025 -->
+    <section class="mb-12 section">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fas fa-database mr-2"></i> 5. Tipos de datos en JavaScript</h2>
+        <div class="p-6 bg-white rounded-lg shadow">
+            <p>JavaScript es un lenguaje <span class="key-term">dinámicamente tipado</span>. Tipos principales:</p>
+            <ul class="list-disc ml-6">
+                <li><span class="key-term">number</span>: Números (enteros, decimales, BigInt).</li>
+                <li><span class="key-term">string</span>: Cadenas de texto.</li>
+                <li><span class="key-term">boolean</span>: true o false.</li>
+                <li><span class="key-term">object</span>: Objetos, arrays, null.</li>
+                <li><span class="key-term">undefined</span>: Variable no asignada.</li>
+                <li><span class="key-term">symbol</span>: Identificador único.</li>
+                <li><span class="key-term">bigint</span>: Números enteros de precisión arbitraria.</li>
+            </ul>
+            <pre>let numero = 42;
+let texto = "Hola";
+let esVerdadero = true;
+let objeto = { nombre: "Juan" };
+let indefinido;
+let simbolo = Symbol("id");
+let grande = 123n;</pre>
+        </div>
+    </section>
+
+    <!-- 6. Tabla con operadores -->
+    <section class="mb-12 section">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fas fa-calculator mr-2"></i> 6. Operadores en JavaScript</h2>
+        <div class="p-6 bg-white rounded-lg shadow">
+            <table>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Operador</th>
+                    <th>Ejemplo</th>
+                    <th>Descripción</th>
+                </tr>
+                <tr>
+                    <td>Aritméticos</td>
+                    <td><span class="key-term">+</span></td>
+                    <td>5 + 3</td>
+                    <td>Suma (8)</td>
+                </tr>
+                <tr>
+                    <td>Aritméticos</td>
+                    <td><span class="key-term">-</span></td>
+                    <td>5 - 3</td>
+                    <td>Resta (2)</td>
+                </tr>
+                <tr>
+                    <td>Aritméticos</td>
+                    <td><span class="key-term">*</span></td>
+                    <td>5 * 3</td>
+                    <td>Multiplicación (15)</td>
+                </tr>
+                <tr>
+                    <td>Aritméticos</td>
+                    <td><span class="key-term">/</span></td>
+                    <td>6 / 2</td>
+                    <td>División (3)</td>
+                </tr>
+                <tr>
+                    <td>Aritméticos</td>
+                    <td><span class="key-term">%</span></td>
+                    <td>5 % 2</td>
+                    <td>Módulo (1)</td>
+                </tr>
+                <tr>
+                    <td>Lógicos</td>
+                    <td><span class="key-term">&&</span></td>
+                    <td>true && false</td>
+                    <td>AND lógico (false)</td>
+                </tr>
+                <tr>
+                    <td>Lógicos</td>
+                    <td><span class="key-term">||</span></td>
+                    <td>true || false</td>
+                    <td>OR lógico (true)</td>
+                </tr>
+                <tr>
+                    <td>Lógicos</td>
+                    <td><span class="key-term">!</span></td>
+                    <td>!true</td>
+                    <td>NOT lógico (false)</td>
+                </tr>
+                <tr>
+                    <td>Relacionales</td>
+                    <td><span class="key-term">==</span></td>
+                    <td>5 == "5"</td>
+                    <td>Igualdad (true)</td>
+                </tr>
+                <tr>
+                    <td>Relacionales</td>
+                    <td><span class="key-term">===</span></td>
+                    <td>5 === "5"</td>
+                    <td>Igualdad estricta (false)</td>
+                </tr>
+                <tr>
+                    <td>Relacionales</td>
+                    <td><span class="key-term">!=</span></td>
+                    <td>5 != "5"</td>
+                    <td>Desigualdad (false)</td>
+                </tr>
+                <tr>
+                    <td>Ternario</td>
+                    <td><span class="key-term">?:</span></td>
+                    <td>edad > 18 ? "Mayor" : "Menor"</td>
+                    <td>Condicional (Mayor/Menor)</td>
+                </tr>
+                <tr>
+                    <td>Unarios</td>
+                    <td><span class="key-term">typeof</span></td>
+                    <td>typeof 42</td>
+                    <td>Tipo de dato ("number")</td>
+                </tr>
+                <tr>
+                    <td>Incremento</td>
+                    <td><span class="key-term">++</span></td>
+                    <td>let x = 5; x++;</td>
+                    <td>Incrementa en 1 (6)</td>
+                </tr>
+                <tr>
+                    <td>Decremento</td>
+                    <td><span class="key-term">--</span></td>
+                    <td>let x = 5; x--;</td>
+                    <td>Decrementa en 1 (4)</td>
+                </tr>
+            </table>
+        </div>
+    </section>
+
+    <!-- 7. Trabajo con cadenas de texto -->
+    <section class="mb-12 section">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fas fa-font mr-2"></i> 7. Trabajo con cadenas de texto</h2>
+        <div class="p-6 bg-white rounded-lg shadow">
+            <p>Las <span class="key-term">cadenas</span> son secuencias de caracteres. Métodos comunes:</p>
+            <ul class="list-disc ml-6">
+                <li><span class="key-term">length</span>: Longitud de la cadena.</li>
+                <li><span class="key-term">toUpperCase</span>: Convierte a mayúsculas.</li>
+                <li><span class="key-term">toLowerCase</span>: Convierte a minúsculas.</li>
+                <li><span class="key-term">slice</span>: Extrae una porción.</li>
+            </ul>
+            <pre>let texto = "Hola, Mundo!";
+console.log(texto.length); // 12
+console.log(texto.toUpperCase()); // HOLA, MUNDO!
+console.log(texto.slice(0, 4)); // Hola</pre>
+        </div>
+    </section>
+
+    <!-- 10. Alert -->
+    <section class="mb-12 section">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fas fa-exclamation-circle mr-2"></i> 10. Alert</h2>
+        <div class="p-6 bg-white rounded-lg shadow">
+            <p>La función <span class="key-term">alert</span> muestra un mensaje en una ventana emergente.</p>
+            <pre>alert("¡Bienvenido a la página!");</pre>
+            <button onclick="alert('¡Esto es un ejemplo de alert!')" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Probar Alert</button>
+        </div>
+    </section>
+
+    <!-- 11. Conversión de tipos de datos -->
+    <section class="mb-12 section">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fas fa-exchange-alt mr-2"></i> 11. Conversión de tipos de datos</h2>
+        <div class="p-6 bg-white rounded-lg shadow">
+            <p>JavaScript realiza <span class="key-term">conversiones implícitas</span> o <span class="key-term">explícitas</span>.</p>
+            <pre>let numero = "42";
+let convertido = Number(numero); // 42
+let texto = String(42); // "42"
+let booleano = Boolean(1); // true</pre>
+        </div>
+    </section>
+
+    <!-- 12. Ingresar datos por teclado -->
+    <section class="mb-12 section">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fas fa-keyboard mr-2"></i> 12. Ingresar datos por teclado</h2>
+        <div class="p-6 bg-white rounded-lg shadow">
+            <h3 class="text-xl font-semibold mb-2">Usando prompt</h3>
+            <p>La función <span class="key-term">prompt</span> permite al usuario ingresar datos.</p>
+            <pre>let nombre = prompt("Ingresa tu nombre:");
+console.log("Hola, " + nombre);</pre>
+            <h3 class="text-xl font-semibold mt-4 mb-2">Usando un input HTML</h3>
+            <p>Usa un campo <span class="key-term">&lt;input&gt;</span> para capturar datos.</p>
+            <pre>&lt;input type="text" id="entrada" placeholder="Ingresa algo"&gt;
+&lt;button onclick="mostrarEntrada()"&gt;Enviar&lt;/button&gt;
+&lt;script&gt;
+function mostrarEntrada() {
+    let valor = document.getElementById("entrada").value;
+    console.log(valor);
+}
+&lt;/script&gt;</pre>
+            <input type="text" id="entrada" placeholder="Ingresa algo" class="border p-2 rounded">
+            <button onclick="mostrarEntrada()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Enviar</button>
+        </div>
+    </section>
+
+    <!-- 13. Qué es depuración -->
+    <section class="mb-12 section">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fas fa-bug mr-2"></i> 13. Qué es depuración</h2>
+        <div class="p-6 bg-white rounded-lg shadow">
+            <p>La <span class="key-term">depuración</span> es el proceso de identificar y corregir errores (<span class="key-term">bugs</span>) en el código. Herramientas:</p>
+            <ul class="list-disc ml-6">
+                <li><span class="key-term">console.log</span>: Muestra valores en la consola.</li>
+                <li><span class="key-term">Debugger</span>: Pausa la ejecución en el navegador.</li>
+                <li>Extensiones como <span class="key-term">DevTools</span> en Chrome/Firefox.</li>
+            </ul>
+            <pre>let x = 10;
+console.log("Valor de x:", x);
+debugger; // Pausa aquí en DevTools</pre>
+        </div>
+    </section>
+
+    <!-- Tarea práctica -->
+    <section class="mb-12 section">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fas fa-tasks mr-2"></i> Tarea: Tipos de datos y operador ternario</h2>
+        <div class="p-6 bg-white rounded-lg shadow">
+            <p><strong>Instrucciones:</strong> Crea un programa que solicite al usuario su edad (usando <span class="key-term">prompt</span>) y determine si es mayor de edad usando un <span class="key-term">operador ternario</span>. Almacena el resultado en una variable y muestra un mensaje con <span class="key-term">alert</span>. Usa diferentes tipos de datos.</p>
+            <pre>let edad = prompt("Ingresa tu edad:");
+let esMayor = (Number(edad) >= 18) ? "Mayor de edad" : "Menor de edad";
+alert("Tú eres: " + esMayor);
+let info = {
+    edadIngresada: edad,
+    resultado: esMayor
+};
+console.log(info);</pre>
+            <button onclick='let edad = prompt("Ingresa tu edad:"); let esMayor = (Number(edad) >= 18) ? "Mayor de edad" : "Menor de edad"; alert("Tú eres: " + esMayor);' class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Probar Tarea</button>
+        </div>
+    </section>
+</main>
+
+<footer class="bg-gray-800 text-white py-8">
+    <div class="container mx-auto px-4 text-center">
+        <p>&copy; 2025 Guía de JavaScript - Arle Morales Ortiz</p>
+    </div>
+</footer>
+
+<script>
+    function mostrarEntrada() {
+        let valor = document.getElementById("entrada").value;
+        alert("Entrada: " + valor);
+    }
+</script>
+</body>
+</html>
