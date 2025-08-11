@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="es" dir="ltr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Tutorial sencillo de Git para principiantes: cómo subir un repositorio y colaborar en equipo. Página responsiva con tema claro." />
+    <title>Tutorial Git — Paso a paso para principiantes</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root{
+            --bg: #f7f8fb;
+            --text: #121420;
+            --muted: #556072;
+            --brand: #6b4eff;
+            --accent: #0ea5e9;
+            --border: #e6e8ef;
+            --card: #ffffff;
+            --code-bg: #121420;
+            --code-fg: #ffffff;
+            --shadow: 0 10px 30px rgba(10,10,10,.07);
+        }
+
+        *{ box-sizing: border-box; }
+        html, body { height: 100%; max-width: 100%; overflow-x: hidden; }
+        body{
+            margin:0;
+            font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+            background: var(--bg);
+            color: var(--text);
+        }
+        a{ color: var(--accent); text-decoration: none; }
+        a:hover{ text-decoration: underline; }
+
+        .container{ max-width: 980px; margin: 0 auto; padding: 0 1rem; }
+        header{
+            position: sticky; top: 0; z-index: 50;
+            background: color-mix(in oklab, var(--bg), #2563eb 100%);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: saturate(1.1) blur(8px);
+        }
+        .nav{ display: flex; align-items: center; justify-content: space-between; padding: .65rem 0; }
+        .brand{ display:flex; align-items:center; gap:.6rem; font-weight:800; letter-spacing:.2px; color:white}
+        .badge{ display:inline-flex; gap:.35rem; align-items:center; border:1px solid var(--border); padding:.15rem .5rem; border-radius:999px; font-size:.85rem; color:white }
+
+        .btn{
+            display:inline-flex; align-items:center; gap:.5rem;
+            border-radius:12px; padding:.6rem .9rem; cursor:pointer;
+            border:1px solid var(--border); background: var(--card); box-shadow: var(--shadow);
+            font-weight:600;
+        }
+        .btn.primary{ background: linear-gradient(180deg,var(--brand), color-mix(in oklab, var(--brand), #000 12%)); color:#fff; border-color: transparent; }
+        .btn.ghost{ background: transparent; }
+        .btn.small{ padding:.45rem .7rem; border-radius:10px; font-size:.92rem; }
+
+        .icon{ width: 1.1em; height: 1.1em; display: inline-block; }
+
+        .hero{ border:1px solid var(--border); background: linear-gradient(180deg, color-mix(in oklab,var(--card), #fff 2%), color-mix(in oklab,var(--card), #000 3%)); border-radius:18px; padding:1.3rem; margin:1rem 0; box-shadow: var(--shadow); }
+        .hero h1{ font-size: clamp(1.5rem, 1.1rem + 2vw, 2.2rem); line-height:1.15; margin:.2rem 0 .6rem; }
+        .hero p{ margin:0 0 1rem; color: var(--muted); }
+        .hero-actions{ display:flex; flex-wrap: wrap; gap:.6rem; }
+
+        section{ border:1px solid var(--border); background: var(--card); border-radius:16px; padding:1rem; margin:1rem 0; }
+        h2, h3{ scroll-margin-top: 82px; }
+
+        .grid{ display:grid; gap:1rem; }
+        .grid.cols-2{ grid-template-columns: repeat(2, 1fr); }
+        .grid.cols-3{ grid-template-columns: repeat(3, 1fr); }
+        .card{ border:1px solid var(--border); background: var(--card); border-radius:14px; padding: .9rem; }
+        @media (max-width: 860px){
+            .grid.cols-2, .grid.cols-3{ grid-template-columns: 1fr; }
+        }
+
+        .step{ display:grid; gap:.45rem; border-left:4px solid color-mix(in oklab, var(--brand), transparent 60%); padding-left:.8rem; margin:1rem 0; }
+        .step .num{ font-weight:800; color: var(--brand); }
+        .step .what{ font-weight:700; }
+        .step .why{ color: var(--muted); }
+
+        .callout{ border:1px solid var(--border); border-left:4px solid var(--accent); background: linear-gradient(180deg, color-mix(in oklab,var(--card), #fff 1%), color-mix(in oklab,var(--card), #000 2%)); border-radius:12px; padding:.8rem; display:flex; gap:.6rem; }
+        .callout .title{ font-weight:700; }
+
+        pre{
+            position: relative;
+            background: var(--code-bg);
+            color: var(--code-fg);
+            border-radius: 12px;
+            border: 1px solid color-mix(in oklab,#ffffff, transparent 92%);
+            padding: 1rem;
+            overflow: auto;
+        }
+        code{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: .95rem; }
+
+        .skip{ position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden; }
+        .skip:focus{ position:static; width:auto; height:auto; background:var(--brand); color:#fff; padding:.5rem; border-radius:8px; }
+
+        footer{ color:var(--muted); padding:1.2rem 0; text-align:center; }
+    </style>
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+
+<header class="bg-blue-600 text-white py-8">
+    <div class="container mx-auto px-4">
+        <h1 class="text-4xl font-bold"><i class="fab fa-js mr-2"></i> Algoritmos y Lógica Computacional</h1>
+        <p class="mt-2 text-lg">Conceptos fundamentales de Git para desarrolladores modernos</p>
+    </div>
+</header>
+</header>
+
+<main id="main" class="container">
+    <section class="hero" aria-label="Introducción">
+        <h1>Git desde cero: sube tu primer repositorio y colabora sin complicarte</h1>
+        <p>Explicaciones cortas, comandos para practicar</p>
+        <div class="hero-actions">
+            <a class="btn primary" href="#primeros-pasos"><svg class="icon"><use href="#i-terminal"/></svg> Empezar ahora</a>
+            <a class="btn ghost" href="#colaborar"><svg class="icon"><use href="#i-org"/></svg> Colaborar en equipo</a>
+        </div>
+    </section>
+
+    <section id="primeros-pasos" aria-labelledby="h-primeros">
+        <h2 id="h-primeros">Primeros pasos (10 minutos)</h2>
+        <div class="callout" role="note" style="margin:.6rem 0 1rem">
+            <svg class="icon"><use href="#i-terminal"/></svg>
+            <div>
+                <div class="title">Necesitas</div>
+                <div>Git instalado y una cuenta en GitHub o GitLab.</div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="num">Paso 1</div>
+            <div class="what">Verifica que Git funciona</div>
+            <div class="why">Compruebas que está instalado correctamente.</div>
+            <pre><code>git --version</code></pre>
+        </div>
+
+        <div class="step">
+            <div class="num">Paso 2</div>
+            <div class="what">Preséntate a Git (una sola vez)</div>
+            <div class="why">Tu nombre y correo salen en los commits.</div>
+            <pre><code>git config --global user.name "Tu Nombre"
+git config --global user.email "tu@correo.com"
+git config --global init.defaultBranch main</code></pre>
+        </div>
+
+        <div class="step">
+            <div class="num">Paso 3</div>
+            <div class="what">Crea un proyecto nuevo</div>
+            <div class="why">Empiezas con un README y tu primer commit.</div>
+            <pre><code>mkdir mi-proyecto && cd mi-proyecto
+git init
+echo "# Mi Proyecto" > README.md
+git add .
+git commit -m "Primer commit: crea README"</code></pre>
+        </div>
+
+        <div class="step">
+            <div class="num">Paso 4</div>
+            <div class="what">Conecta con GitHub y sube (push)</div>
+            <div class="why">Tu código vive en la nube y puedes compartirlo.</div>
+            <pre><code># En GitHub/GitLab crea un repo vacío llamado mi-proyecto
+git branch -M main
+git remote add origin https://github.com/usuario/mi-proyecto.git
+# o por SSH: git@github.com:usuario/mi-proyecto.git
+git push -u origin main</code></pre>
+        </div>
+
+        <div class="step">
+            <div class="num">Paso 5</div>
+            <div class="what">Clona un repositorio existente</div>
+            <div class="why">Descargas una copia local lista para editar.</div>
+            <pre><code>git clone https://github.com/organizacion/app.git
+cd app</code></pre>
+        </div>
+
+        <h3>Tu día a día (editar → guardar → subir)</h3>
+        <div class="grid cols-2">
+            <div class="card">
+                <h3>Guarda cambios</h3>
+                <pre><code>git status
+git add .
+git commit -m "mensaje corto y claro"</code></pre>
+            </div>
+            <div class="card">
+                <h3>Sincroniza con la nube</h3>
+                <pre><code>git pull
+git push</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <section id="colaborar">
+        <h2>Colaborar en equipo (lo esencial)</h2>
+        <div class="grid cols-2">
+            <div class="card">
+                <h3>Trabaja en una rama aparte</h3>
+                <pre><code>git switch -c feature/contacto
+# ... edita archivos ...
+git add . && git commit -m "contacto: agrega formulario"
+git push -u origin feature/contacto</code></pre>
+            </div>
+            <div class="card">
+                <h3>Abre un Pull/Merge Request</h3>
+                <p>En GitHub/GitLab crea el PR/MR de tu rama hacia <code>main</code> y pide revisión.</p>
+            </div>
+        </div>
+        <div class="grid cols-2">
+            <div class="card">
+                <h3>Mantén tu rama al día</h3>
+                <pre><code>git pull origin main
+git add .
+git commit -m "resuelve conflictos simples"
+git push</code></pre>
+            </div>
+            <div class="card">
+                <h3>Errores comunes</h3>
+                <ul>
+                    <li>Olvidar <code>git add .</code> antes del commit.</li>
+                    <li>Hacer cambios en <code>main</code> directamente.</li>
+                    <li>Mensajes de commit vagos.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="recursos-basicos">
+        <h2>Recursos básicos</h2>
+        <div class="grid cols-3">
+            <div class="card"><h3>Ver historial</h3>
+                <pre><code>git log --oneline -n 20</code></pre>
+            </div>
+            <div class="card"><h3>Ignorar archivos</h3>
+                <pre><code>node_modules/
+.env
+.DS_Store</code></pre>
+            </div>
+            <div class="card"><h3>Ayuda integrada</h3>
+                <pre><code>git help commit
+git help push</code></pre>
+            </div>
+        </div>
+    </section>
+</main>
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2025 Guía de JavaScript - Arle Morales Ortiz</p>
+        </div>
+    </footer>
+
+</body>
+</html>
