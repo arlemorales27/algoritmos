@@ -1,251 +1,370 @@
-<!doctype html>
-<html lang="es" dir="ltr">
+<!DOCTYPE html>
+<html lang="es">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Tutorial sencillo de Git para principiantes: cómo subir un repositorio y colaborar en equipo. Página responsiva con tema claro." />
-    <title>Tutorial Git — Paso a paso para principiantes</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guía Profesional de Git (2025)</title>
+    <!-- Tailwind 2.x CDN -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
         :root{
-            --bg: #f7f8fb;
-            --text: #121420;
-            --muted: #556072;
-            --brand: #6b4eff;
-            --accent: #0ea5e9;
-            --border: #e6e8ef;
-            --card: #ffffff;
-            --code-bg: #121420;
-            --code-fg: #ffffff;
-            --shadow: 0 10px 30px rgba(10,10,10,.07);
+            --azul:#1D4ED8; /* Indigo-700 */
+            --morado:#6B46C1; /* Purple-700 */
+            --azulClaro:#3B82F6; /* Blue-500 */
         }
-
-        *{ box-sizing: border-box; }
-        html, body { height: 100%; max-width: 100%; overflow-x: hidden; }
-        body{
-            margin:0;
-            font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-            background: var(--bg);
-            color: var(--text);
-        }
-        a{ color: var(--accent); text-decoration: none; }
-        a:hover{ text-decoration: underline; }
-
-        .container{ max-width: 980px; margin: 0 auto; padding: 0 1rem; }
-        header{
-            position: sticky; top: 0; z-index: 50;
-            background: color-mix(in oklab, var(--bg), #2563eb 100%);
-            border-bottom: 1px solid var(--border);
-            backdrop-filter: saturate(1.1) blur(8px);
-        }
-        .nav{ display: flex; align-items: center; justify-content: space-between; padding: .65rem 0; }
-        .brand{ display:flex; align-items:center; gap:.6rem; font-weight:800; letter-spacing:.2px; color:white}
-        .badge{ display:inline-flex; gap:.35rem; align-items:center; border:1px solid var(--border); padding:.15rem .5rem; border-radius:999px; font-size:.85rem; color:white }
-
-        .btn{
-            display:inline-flex; align-items:center; gap:.5rem;
-            border-radius:12px; padding:.6rem .9rem; cursor:pointer;
-            border:1px solid var(--border); background: var(--card); box-shadow: var(--shadow);
-            font-weight:600;
-        }
-        .btn.primary{ background: linear-gradient(180deg,var(--brand), color-mix(in oklab, var(--brand), #000 12%)); color:#fff; border-color: transparent; }
-        .btn.ghost{ background: transparent; }
-        .btn.small{ padding:.45rem .7rem; border-radius:10px; font-size:.92rem; }
-
-        .icon{ width: 1.1em; height: 1.1em; display: inline-block; }
-
-        .hero{ border:1px solid var(--border); background: linear-gradient(180deg, color-mix(in oklab,var(--card), #fff 2%), color-mix(in oklab,var(--card), #000 3%)); border-radius:18px; padding:1.3rem; margin:1rem 0; box-shadow: var(--shadow); }
-        .hero h1{ font-size: clamp(1.5rem, 1.1rem + 2vw, 2.2rem); line-height:1.15; margin:.2rem 0 .6rem; }
-        .hero p{ margin:0 0 1rem; color: var(--muted); }
-        .hero-actions{ display:flex; flex-wrap: wrap; gap:.6rem; }
-
-        section{ border:1px solid var(--border); background: var(--card); border-radius:16px; padding:1rem; margin:1rem 0; }
-        h2, h3{ scroll-margin-top: 82px; }
-
-        .grid{ display:grid; gap:1rem; }
-        .grid.cols-2{ grid-template-columns: repeat(2, 1fr); }
-        .grid.cols-3{ grid-template-columns: repeat(3, 1fr); }
-        .card{ border:1px solid var(--border); background: var(--card); border-radius:14px; padding: .9rem; }
-        @media (max-width: 860px){
-            .grid.cols-2, .grid.cols-3{ grid-template-columns: 1fr; }
-        }
-
-        .step{ display:grid; gap:.45rem; border-left:4px solid color-mix(in oklab, var(--brand), transparent 60%); padding-left:.8rem; margin:1rem 0; }
-        .step .num{ font-weight:800; color: var(--brand); }
-        .step .what{ font-weight:700; }
-        .step .why{ color: var(--muted); }
-
-        .callout{ border:1px solid var(--border); border-left:4px solid var(--accent); background: linear-gradient(180deg, color-mix(in oklab,var(--card), #fff 1%), color-mix(in oklab,var(--card), #000 2%)); border-radius:12px; padding:.8rem; display:flex; gap:.6rem; }
-        .callout .title{ font-weight:700; }
-
-        pre{
-            position: relative;
-            background: var(--code-bg);
-            color: var(--code-fg);
-            border-radius: 12px;
-            border: 1px solid color-mix(in oklab,#ffffff, transparent 92%);
-            padding: 1rem;
-            overflow: auto;
-        }
-        code{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: .95rem; }
-
-        .skip{ position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden; }
-        .skip:focus{ position:static; width:auto; height:auto; background:var(--brand); color:#fff; padding:.5rem; border-radius:8px; }
-
-        footer{ color:var(--muted); padding:1.2rem 0; text-align:center; }
+        .key-term{color:var(--azul);font-weight:700}
+        .section-title{color:var(--morado)}
+        .section{border-left:4px solid var(--azulClaro);padding-left:1rem}
+        pre{background:#f6f8fa;padding:1rem;border-radius:12px;overflow-x:auto}
+        code{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+        .chip{background:rgba(59,130,246,.1);color:#1e40af;padding:.25rem .6rem;border-radius:9999px;font-size:.75rem}
+        .card-gradient{background:linear-gradient(135deg, rgba(29,78,216,.1), rgba(107,70,193,.08));}
+        .shine{position:relative;overflow:hidden}
+        .shine::after{content:"";position:absolute;top:-120%;left:-120%;width:240%;height:240%;background:linear-gradient(120deg, transparent 40%, rgba(255,255,255,.25), transparent 60%);transform:rotate(10deg);animation:shine 7s infinite}
+        @keyframes shine{0%{transform:translateX(-120%) rotate(10deg)}100%{transform:translateX(120%) rotate(10deg)}}
+        /* Anchor offset for fixed header */
+        .anchor:before{content:"";display:block;height:80px;margin-top:-80px;visibility:hidden}
+        /* Table style */
+        table{width:100%;border-collapse:collapse;margin:1rem 0}
+        th,td{border:1px solid #e5e7eb;padding:.75rem;text-align:left}
+        th{background-color:var(--azulClaro);color:#fff}
+        /* Smooth scroll */
+        html{scroll-behavior:smooth}
     </style>
 </head>
-<body>
-<a class="skip" href="#main">Saltar al contenido</a>
-
-<header class="bg-blue-600 text-white py-8">
-    <div class="container mx-auto px-4">
-        <h1 class="text-4xl font-bold"><i class="fab fa-js mr-2"></i> Algoritmos y Lógica Computacional</h1>
-        <p class="mt-2 text-lg">Conceptos fundamentales de Git para desarrolladores modernos</p>
+<body class="bg-gray-50 font-sans">
+<!-- Header / Hero -->
+<header class="relative bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 text-white">
+    <div class="absolute inset-0 opacity-20 bg-center bg-cover"
+         style="background-image:url('https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=1600&auto=format&fit=crop');"></div>
+    <div class="container mx-auto px-6 py-14 relative">
+        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            <div>
+                <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight shine">
+                    <i class="fa-brands fa-git-alt mr-3"></i> Guía Profesional de Git
+                </h1>
+                <p class="mt-3 text-lg text-blue-100 max-w-2xl">Tutorial paso a paso para dominar control de versiones con Git y GitHub en entornos profesionales.</p>
+                <div class="mt-4 space-x-2">
+                    <span class="chip"><i class="fa-solid fa-graduation-cap mr-1"></i>Básico a Intermedio</span>
+                    <span class="chip"><i class="fa-solid fa-briefcase mr-1"></i>Industria</span>
+                    <span class="chip"><i class="fa-solid fa-code-branch mr-1"></i>Flujos reales</span>
+                </div>
+            </div>
+            <nav aria-label="Contenido" class="bg-white/10 backdrop-filter backdrop-blur rounded-2xl p-4 w-full lg:w-96 shadow-lg">
+                <h2 class="font-semibold mb-2"><i class="fa-solid fa-list-check mr-2"></i>Índice</h2>
+                <ol class="grid grid-cols-1 gap-2 text-sm">
+                    <li><a href="#s1" class="hover:underline">1. ¿Qué es un sistema de control de versiones?</a></li>
+                    <li><a href="#s2" class="hover:underline">2. Sistemas usados en empresas</a></li>
+                    <li><a href="#s3" class="hover:underline">3. ¿Qué es Git?</a></li>
+                    <li><a href="#s4" class="hover:underline">4. ¿Qué es GitHub?</a></li>
+                    <li><a href="#s5" class="hover:underline">5. Subir un repo a GitHub (paso a paso)</a></li>
+                    <li><a href="#s6" class="hover:underline">6. Ramas y flujos en la industria</a></li>
+                    <li><a href="#s7" class="hover:underline">7. Clonar un repositorio</a></li>
+                    <li><a href="#s8" class="hover:underline">8. Pull: traer cambios</a></li>
+                    <li><a href="#s9" class="hover:underline">9. Pull Request en empresas</a></li>
+                    <li><a href="#s10" class="hover:underline">10. ¿Qué es merge?</a></li>
+                    <li><a href="#s11" class="hover:underline">11. Forzar push: casos y riesgos</a></li>
+                    <li><a href="#s12" class="hover:underline">12. Conflictos comunes en ramas</a></li>
+                    <li><a href="#tarea" class="hover:underline font-semibold">Tarea final: Subir “seguimiento”</a></li>
+                </ol>
+            </nav>
+        </div>
     </div>
 </header>
-</header>
 
-<main id="main" class="container">
-    <section class="hero" aria-label="Introducción">
-        <h1>Git desde cero: sube tu primer repositorio y colabora sin complicarte</h1>
-        <p>Explicaciones cortas, comandos para practicar</p>
-        <div class="hero-actions">
-            <a class="btn primary" href="#primeros-pasos"><svg class="icon"><use href="#i-terminal"/></svg> Empezar ahora</a>
-            <a class="btn ghost" href="#colaborar"><svg class="icon"><use href="#i-org"/></svg> Colaborar en equipo</a>
+<main class="container mx-auto px-6 py-10">
+
+    <!-- Requisitos previos -->
+    <section class="mb-10 section card-gradient rounded-xl shadow">
+        <div class="p-6">
+            <h2 class="text-2xl font-semibold section-title">
+                <i class="fa-solid fa-toolbox mr-2"></i> Requisitos previos
+            </h2>
+            <p class="mt-2 text-gray-700">Instala <a class="underline text-blue-700" href="https://git-scm.com/" target="_blank" rel="noopener">Git</a> y crea una cuenta en <a class="underline text-blue-700" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>. Verifica tu instalación:</p>
+            <pre><code>$ git --version
+$ git config --global user.name "Tu Nombre"
+$ git config --global user.email "tu@email.com"</code></pre>
         </div>
     </section>
 
-    <section id="primeros-pasos" aria-labelledby="h-primeros">
-        <h2 id="h-primeros">Primeros pasos (10 minutos)</h2>
-        <div class="callout" role="note" style="margin:.6rem 0 1rem">
-            <svg class="icon"><use href="#i-terminal"/></svg>
-            <div>
-                <div class="title">Necesitas</div>
-                <div>Git instalado y una cuenta en GitHub o GitLab.</div>
-            </div>
-        </div>
-
-        <div class="step">
-            <div class="num">Paso 1</div>
-            <div class="what">Verifica que Git funciona</div>
-            <div class="why">Compruebas que está instalado correctamente.</div>
-            <pre><code>git --version</code></pre>
-        </div>
-
-        <div class="step">
-            <div class="num">Paso 2</div>
-            <div class="what">Preséntate a Git (una sola vez)</div>
-            <div class="why">Tu nombre y correo salen en los commits.</div>
-            <pre><code>git config --global user.name "Tu Nombre"
-git config --global user.email "tu@correo.com"
-git config --global init.defaultBranch main</code></pre>
-        </div>
-
-        <div class="step">
-            <div class="num">Paso 3</div>
-            <div class="what">Crea un proyecto nuevo</div>
-            <div class="why">Empiezas con un README y tu primer commit.</div>
-            <pre><code>mkdir mi-proyecto && cd mi-proyecto
-git init
-echo "# Mi Proyecto" > README.md
-git add .
-git commit -m "Primer commit: crea README"</code></pre>
-        </div>
-
-        <div class="step">
-            <div class="num">Paso 4</div>
-            <div class="what">Conecta con GitHub y sube (push)</div>
-            <div class="why">Tu código vive en la nube y puedes compartirlo.</div>
-            <pre><code># En GitHub/GitLab crea un repo vacío llamado mi-proyecto
-git branch -M main
-git remote add origin https://github.com/usuario/mi-proyecto.git
-# o por SSH: git@github.com:usuario/mi-proyecto.git
-git push -u origin main</code></pre>
-        </div>
-
-        <div class="step">
-            <div class="num">Paso 5</div>
-            <div class="what">Clona un repositorio existente</div>
-            <div class="why">Descargas una copia local lista para editar.</div>
-            <pre><code>git clone https://github.com/organizacion/app.git
-cd app</code></pre>
-        </div>
-
-        <h3>Tu día a día (editar → guardar → subir)</h3>
-        <div class="grid cols-2">
-            <div class="card">
-                <h3>Guarda cambios</h3>
-                <pre><code>git status
-git add .
-git commit -m "mensaje corto y claro"</code></pre>
-            </div>
-            <div class="card">
-                <h3>Sincroniza con la nube</h3>
-                <pre><code>git pull
-git push</code></pre>
-            </div>
+    <!-- 1. Qué es un sistema control de versiones -->
+    <section id="s1" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-diagram-project mr-2"></i> 1. ¿Qué es un sistema de control de versiones?</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p>Un <span class="key-term">Sistema de Control de Versiones (VCS)</span> registra los cambios de tus archivos en el tiempo, permite volver a estados anteriores, colaborar con seguridad y auditar quién cambió qué y cuándo.</p>
+            <ul class="list-disc ml-6 mt-3 text-gray-700">
+                <li>Historial completo y recuperable.</li>
+                <li>Trabajo en paralelo sin sobrescribir a otros.</li>
+                <li>Integraciones con CI/CD, revisiones y seguridad.</li>
+            </ul>
         </div>
     </section>
 
-    <section id="colaborar">
-        <h2>Colaborar en equipo (lo esencial)</h2>
-        <div class="grid cols-2">
-            <div class="card">
-                <h3>Trabaja en una rama aparte</h3>
-                <pre><code>git switch -c feature/contacto
-# ... edita archivos ...
-git add . && git commit -m "contacto: agrega formulario"
-git push -u origin feature/contacto</code></pre>
+    <!-- 2. Sistemas usados en empresas -->
+    <section id="s2" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-building mr-2"></i> 2. Sistemas de control de versiones usados en empresas</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-xl font-semibold mb-2">Distribuidos</h3>
+                    <ul class="list-disc ml-6">
+                        <li><span class="key-term">Git</span> (estándar de la industria)</li>
+                        <li>Mercurial (HG)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-2">Centralizados / Mixtos</h3>
+                    <ul class="list-disc ml-6">
+                        <li>Subversion (SVN)</li>
+                        <li>Perforce (Helix Core) — frecuente en juegos/diseño</li>
+                    </ul>
+                </div>
             </div>
-            <div class="card">
-                <h3>Abre un Pull/Merge Request</h3>
-                <p>En GitHub/GitLab crea el PR/MR de tu rama hacia <code>main</code> y pide revisión.</p>
-            </div>
-        </div>
-        <div class="grid cols-2">
-            <div class="card">
-                <h3>Mantén tu rama al día</h3>
-                <pre><code>git pull origin main
-git add .
-git commit -m "resuelve conflictos simples"
-git push</code></pre>
-            </div>
-            <div class="card">
-                <h3>Errores comunes</h3>
-                <ul>
-                    <li>Olvidar <code>git add .</code> antes del commit.</li>
-                    <li>Hacer cambios en <code>main</code> directamente.</li>
-                    <li>Mensajes de commit vagos.</li>
+            <div class="mt-4">
+                <h3 class="text-xl font-semibold mb-2">Plataformas de hosting Git</h3>
+                <ul class="list-disc ml-6">
+                    <li><span class="key-term">GitHub</span>, GitLab, Bitbucket, Azure Repos.</li>
                 </ul>
             </div>
         </div>
     </section>
 
-    <section id="recursos-basicos">
-        <h2>Recursos básicos</h2>
-        <div class="grid cols-3">
-            <div class="card"><h3>Ver historial</h3>
-                <pre><code>git log --oneline -n 20</code></pre>
-            </div>
-            <div class="card"><h3>Ignorar archivos</h3>
-                <pre><code>node_modules/
-.env
-.DS_Store</code></pre>
-            </div>
-            <div class="card"><h3>Ayuda integrada</h3>
-                <pre><code>git help commit
-git help push</code></pre>
+    <!-- 3. ¿Qué es Git? -->
+    <section id="s3" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-brands fa-git-alt mr-2"></i> 3. ¿Qué es Git?</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p><span class="key-term">Git</span> es un VCS <strong>distribuido</strong>: cada clon contiene el historial completo. Es rápido, seguro (hashes SHA), y permite ramas/merges eficientes.</p>
+            <table class="mt-4">
+                <tr><th>Concepto</th><th>Descripción</th></tr>
+                <tr><td>Commit</td><td>Foto del proyecto en un punto del tiempo.</td></tr>
+                <tr><td>Branch</td><td>Línea de trabajo independiente.</td></tr>
+                <tr><td>Remote</td><td>Repositorio alojado (GitHub, etc.).</td></tr>
+                <tr><td>HEAD</td><td>Puntero a tu commit/branch actual.</td></tr>
+            </table>
+        </div>
+    </section>
+
+    <!-- 4. ¿Qué es GitHub? -->
+    <section id="s4" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-brands fa-github mr-2"></i> 4. ¿Qué es GitHub?</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p><span class="key-term">GitHub</span> es una plataforma para alojar repositorios Git con funciones de colaboración: issues, Pull Requests (PR), revisiones, CI/CD, gestión de equipos y seguridad (Actions, Dependabot, etc.).</p>
+        </div>
+    </section>
+
+    <!-- 5. Subir repo a GitHub paso a paso -->
+    <section id="s5" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-upload mr-2"></i> 5. ¿Cómo subo un repositorio a GitHub? (paso a paso)</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <ol class="list-decimal ml-6 space-y-2">
+                <li>Crea un repo vacío en GitHub (sin README/ .gitignore para evitar conflictos).</li>
+                <li>En tu carpeta local inicializa Git:
+                    <pre><code>$ git init
+$ echo "# Mi Proyecto" > README.md
+$ git add .
+$ git commit -m "feat: primer commit"</code></pre>
+                </li>
+                <li>Conecta el remoto y empuja <em>main</em>:
+                    <pre><code>$ git remote add origin https://github.com/usuario/mi-proyecto.git
+$ git branch -M main
+$ git push -u origin main</code></pre>
+                </li>
+                <li>Comprueba en GitHub que aparecen los archivos y el historial.</li>
+            </ol>
+            <p class="mt-3 text-sm text-gray-600"><i class="fa-solid fa-circle-info mr-1"></i> Si el repo remoto ya tenía commits, primero haz <code>git pull --rebase origin main</code> antes del push.</p>
+        </div>
+    </section>
+
+    <!-- 6. Ramas y flujos en la industria -->
+    <section id="s6" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-code-branch mr-2"></i> 6. ¿Cómo se crean ramas y cómo funciona en la industria?</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-xl font-semibold mb-2">Crear y trabajar en una rama</h3>
+                    <pre><code># crear y moverte a una rama
+$ git checkout -b feature/login
+# trabajar y commitear
+$ git add .
+$ git commit -m "feat(login): formulario y validaciones"</code></pre>
+                    <pre><code># publicar la rama en remoto
+$ git push -u origin feature/login</code></pre>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-2">Flujos comunes</h3>
+                    <ul class="list-disc ml-6">
+                        <li><span class="key-term">Feature Branch</span>: rama por tarea/issue → PR a <em>main</em>.</li>
+                        <li><span class="key-term">GitFlow</span>: ramas <em>develop</em>, <em>release</em>, <em>hotfix</em>.</li>
+                        <li><span class="key-term">Trunk-Based</span>: commits pequeños a <em>main</em> con feature flags.</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </section>
-</main>
-    <footer class="bg-gray-800 text-white py-8">
-        <div class="container mx-auto px-4 text-center">
-            <p>&copy; 2025 Guía de JavaScript - Arle Morales Ortiz</p>
-        </div>
-    </footer>
 
+    <!-- 7. Clonar un repositorio -->
+    <section id="s7" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-clone mr-2"></i> 7. ¿Cómo clono un repositorio?</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+        <pre><code>$ git clone https://github.com/organizacion/proyecto.git
+$ cd proyecto
+$ git remote -v   # verifica remotos</code></pre>
+            <p class="mt-2 text-gray-700">Para clonar con SSH (recomendado en empresas): <code>git@github.com:organizacion/proyecto.git</code></p>
+        </div>
+    </section>
+
+    <!-- 8. Pull -->
+    <section id="s8" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-download mr-2"></i> 8. ¿Cómo es la mecánica para hacer <em>pull</em>?</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p><span class="key-term">git pull</span> trae cambios del remoto y los integra a tu rama actual (fetch + merge). En equipos suele preferirse <span class="key-term">rebase</span> para historial lineal.</p>
+            <pre><code># opción merge (por defecto)
+$ git pull origin main
+# opción rebase (historial más limpio)
+$ git pull --rebase origin main</code></pre>
+        </div>
+    </section>
+
+    <!-- 9. Pull Request -->
+    <section id="s9" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-people-arrows mr-2"></i> 9. ¿Qué es un Pull Request y cómo es la dinámica?</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p>Un <span class="key-term">Pull Request (PR)</span> es una solicitud para integrar cambios desde tu rama hacia otra (p. ej., <em>main</em>). La dinámica típica en empresas:</p>
+            <ol class="list-decimal ml-6 space-y-1 mt-2">
+                <li>Empujas tu rama al remoto.</li>
+                <li>Creas el PR en la plataforma (título claro, descripción, capturas, <em>checklist</em> y enlace a issue).</li>
+                <li>Revisores dan <em>feedback</em> y aprueban.</li>
+                <li>CI debe pasar (tests, lint, build).</li>
+                <li>Se realiza <span class="key-term">merge</span> o <span class="key-term">squash & merge</span> y se elimina la rama.</li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- 10. Merge -->
+    <section id="s10" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-layer-group mr-2"></i> 10. ¿Qué es <em>merge</em>?</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p><span class="key-term">Merge</span> combina el historial de dos ramas. Puede crear un commit de merge si hay divergencia.</p>
+            <pre><code>$ git checkout main
+$ git merge feature/login   # une la rama al main</code></pre>
+            <p class="text-sm text-gray-600 mt-2">Alternativa: <span class="key-term">rebase</span> reescribe tu rama encima de otra para un historial lineal (<code>git rebase main</code>).</p>
+        </div>
+    </section>
+
+    <!-- 11. Force Push -->
+    <section id="s11" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-triangle-exclamation mr-2"></i> 11. ¿Cómo se fuerza un push y en qué casos se usa?</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p>Un <span class="key-term">push forzado</span> (<code>--force-with-lease</code>) sobrescribe el remoto con tu historial local. Úsalo solo cuando reescribiste historial (<em>rebase</em>/<em>fixup</em>) en tu <strong>rama propia</strong>, nunca en <em>main</em> compartida.</p>
+            <pre><code># tras rebase interactivo, publicar cambios reescritos de forma segura
+$ git push --force-with-lease origin feature/login</code></pre>
+            <p class="text-sm text-gray-600"><i class="fa-solid fa-shield-halved mr-1"></i> <strong>Riesgo:</strong> puede perder cambios ajenos si no verificas. <em>--force-with-lease</em> reduce el riesgo comparado con <code>--force</code>.</p>
+        </div>
+    </section>
+
+    <!-- 12. Conflictos comunes -->
+    <section id="s12" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-bug mr-2"></i> 12. ¿Qué posibles conflictos pueden ocurrir en una rama?</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <ul class="list-disc ml-6 space-y-1">
+                <li><span class="key-term">Edición en la misma línea</span> de un archivo por dos ramas.</li>
+                <li><span class="key-term">Borrado vs. modificación</span> del mismo archivo.</li>
+                <li><span class="key-term">Conflictos binarios</span> (imágenes, builds).</li>
+                <li><span class="key-term">Conflictos al rebase</span> (reaplicar commits sobre base nueva).</li>
+            </ul>
+            <pre class="mt-3"><code># resolver conflictos
+$ git status                 # ve archivos en conflicto
+$ git add archivo_resuelto   # marca como resuelto
+$ git rebase --continue      # o git commit si estabas en merge</code></pre>
+        </div>
+    </section>
+
+    <!-- Callouts de productividad -->
+    <section class="mb-12 section card-gradient rounded-xl shadow">
+        <div class="p-6">
+            <h3 class="text-xl font-semibold mb-3"><i class="fa-solid fa-bolt mr-2"></i> Consejos pro</h3>
+            <div class="grid md:grid-cols-3 gap-4 text-sm">
+                <div class="bg-white rounded-lg p-4 shadow">
+                    <p class="font-semibold mb-1">Commits pequeños</p>
+                    <p>Facilitan la revisión y el <em>revert</em>.</p>
+                </div>
+                <div class="bg-white rounded-lg p-4 shadow">
+                    <p class="font-semibold mb-1">Mensajes claros</p>
+                    <p>Usa prefijos: <code>feat:</code>, <code>fix:</code>, <code>docs:</code>, etc.</p>
+                </div>
+                <div class="bg-white rounded-lg p-4 shadow">
+                    <p class="font-semibold mb-1">Pull frecuente</p>
+                    <p>Reduce conflictos y sorpresas al integrar.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tarea final -->
+    <section id="tarea" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-tasks mr-2"></i> Tarea final: Subir el repositorio <em>seguimiento</em></h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <ol class="list-decimal ml-6 space-y-2">
+                <li>En GitHub, crea el repo <strong>seguimiento</strong> (público o privado).</li>
+                <li>En tu PC:
+                    <pre><code>$ mkdir seguimiento && cd seguimiento
+$ git init
+$ echo "Proyecto de seguimiento" > README.md
+$ git add .
+$ git commit -m "chore: init seguimiento"</code></pre>
+                </li>
+                <li>Conecta y empuja a GitHub:
+                    <pre><code>$ git remote add origin https://github.com/usuario/seguimiento.git
+$ git branch -M main
+$ git push -u origin main</code></pre>
+                </li>
+                <li>Crea una rama <code>feature/tarea-1</code>, añade un archivo <code>tarea1.md</code> y sube un PR.</li>
+            </ol>
+            <div class="mt-4 text-sm text-gray-600">
+                <p><i class="fa-regular fa-square-check mr-1"></i> Entregable: enlace al repositorio y al PR.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recursos visuales -->
+    <section class="mb-16 section card-gradient rounded-xl shadow">
+        <div class="p-6">
+
+            <div class="grid md:grid-cols-3 gap-4 mt-3">
+                <img class="rounded-xl shadow" alt="Diagrama de branching" src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200&auto=format&fit=crop" />
+                <img class="rounded-xl shadow" alt="Código fuente" src="https://images.unsplash.com/photo-1517433456452-f9633a875f6f?q=80&w=1200&auto=format&fit=crop" />
+                <img class="rounded-xl shadow" alt="Equipo colaborando" src="https://images.unsplash.com/photo-1552581234-26160f608093?q=80&w=1200&auto=format&fit=crop" />
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-gray-900 text-gray-200">
+    <div class="container mx-auto px-6 py-10 text-center">
+        <p class="text-lg font-semibold">&copy; 2025 Guía Profesional de Git</p>
+        <p class="text-sm text-gray-400 mt-1">Diseño con Tailwind y Font Awesome. Colores inspirados en azul/morado.</p>
+        <div class="mt-3 flex justify-center space-x-4 text-xl">
+            <a class="hover:text-white" href="#s5" title="Subir a GitHub"><i class="fa-solid fa-upload"></i></a>
+            <a class="hover:text-white" href="#s6" title="Ramas"><i class="fa-solid fa-code-branch"></i></a>
+            <a class="hover:text-white" href="#tarea" title="Tarea final"><i class="fa-solid fa-tasks"></i></a>
+        </div>
+    </div>
+</footer>
+
+<!-- Utilidades: botón copiar -->
+<script>
+    // Delegado simple para copiar bloques <pre><code>
+    document.addEventListener('click', (e) => {
+        if(e.target.matches('.copy-btn')){
+            const pre = e.target.closest('.code-wrap').querySelector('code');
+            navigator.clipboard.writeText(pre.innerText);
+            e.target.innerHTML = '<i class="fa-solid fa-check"></i> Copiado';
+            setTimeout(()=> e.target.innerHTML = '<i class="fa-regular fa-copy"></i> Copiar', 1500);
+        }
+    });
+</script>
 </body>
 </html>
