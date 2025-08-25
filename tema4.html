@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guía Interactiva: Estructuras de Control (2025)</title>
+    <!-- Tailwind 2.x CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        :root{
+            --azul:#1D4ED8; /* Indigo-700 */
+            --morado:#6B46C1; /* Purple-700 */
+            --azulClaro:#3B82F6; /* Blue-500 */
+        }
+        html{scroll-behavior:smooth}
+        .key-term{color:var(--azul);font-weight:700}
+        .section-title{color:var(--morado)}
+        .section{border-left:4px solid var(--azulClaro);padding-left:1rem}
+        pre{background:#f6f8fa;padding:1rem;border-radius:12px;overflow-x:auto}
+        code{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+        .chip{background:rgba(59,130,246,.1);color:#1e40af;padding:.25rem .6rem;border-radius:9999px;font-size:.75rem}
+        .card-gradient{background:linear-gradient(135deg, rgba(29,78,216,.08), rgba(107,70,193,.06));}
+        .shine{position:relative;overflow:hidden}
+        .shine::after{content:"";position:absolute;top:-120%;left:-120%;width:240%;height:240%;background:linear-gradient(120deg, transparent 40%, rgba(255,255,255,.25), transparent 60%);transform:rotate(10deg);animation:shine 7s infinite}
+        @keyframes shine{0%{transform:translateX(-120%) rotate(10deg)}100%{transform:translateX(120%) rotate(10deg)}}
+        /* Anchor offset for fixed header */
+        .anchor:before{content:"";display:block;height:80px;margin-top:-80px;visibility:hidden}
+        /* Table style */
+        table{width:100%;border-collapse:collapse;margin:1rem 0}
+        th,td{border:1px solid #e5e7eb;padding:.75rem;text-align:left}
+        th{background-color:var(--azulClaro);color:#fff}
+
+        /* Code annotate & tour */
+        .code-wrap{position:relative}
+        .code-toolbar{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.5rem}
+        .btn{font-size:.8rem;border:1px solid #d1d5db;padding:.35rem .6rem;border-radius:.75rem;background:#fff;display:inline-flex;align-items:center;gap:.4rem}
+        .btn:hover{box-shadow:0 2px 10px rgba(0,0,0,.06)}
+        .btn[disabled]{opacity:.5;cursor:not-allowed}
+
+        .hl{background:rgba(59,130,246,.16);padding:.05rem .15rem;border-radius:.25rem;cursor:pointer}
+        .hl.active{outline:2px solid var(--azulClaro)}
+
+        .tooltip{position:absolute;z-index:20;background:#111827;color:#F9FAFB;padding:.5rem .65rem;border-radius:.5rem;font-size:.8rem;box-shadow:0 8px 30px rgba(0,0,0,.25);max-width:260px}
+        .tooltip::after{content:"";position:absolute;border:7px solid transparent;border-top-color:#111827;bottom:-14px;left:12px}
+
+        .output{background:#0b1220;color:#D1E7FF;border-radius:.75rem;padding:.75rem;min-height:2.25rem;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+
+        /* Step animation */
+        .step-focus{background:linear-gradient(90deg, rgba(59,130,246,.18), rgba(107,70,193,.18));border-radius:.35rem}
+
+        /* Sticky TOC on desktop */
+        @media(min-width:1024px){
+            nav[aria-label="Contenido"]{position:sticky;top:1rem;height:fit-content}
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+<!-- Header / Hero -->
+<header class="relative bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 text-white">
+    <div class="absolute inset-0 opacity-20 bg-center bg-cover" style="background-image:url('https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=1600&auto=format&fit=crop');"></div>
+    <div class="container mx-auto px-6 py-14 relative">
+        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            <div>
+                <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight shine">
+                    <i class="fa-solid fa-code-branch mr-3"></i> Guía Interactiva de Estructuras de Control
+                </h1>
+                <p class="mt-3 text-lg text-blue-100 max-w-2xl">Decisiones <span class="font-semibold">if / switch / ternario</span> y bucles <span class="font-semibold">for / while / do...while</span> con ejemplos claros, simulaciones y micro-animaciones.</p>
+                <div class="mt-4 space-x-2">
+                    <span class="chip"><i class="fa-solid fa-graduation-cap mr-1"></i>Básico a Intermedio</span>
+                    <span class="chip"><i class="fa-solid fa-laptop-code mr-1"></i>JavaScript</span>
+                    <span class="chip"><i class="fa-solid fa-hand-pointer mr-1"></i>Interactivo</span>
+                </div>
+            </div>
+            <nav aria-label="Contenido" class="bg-white/10 backdrop-filter backdrop-blur rounded-2xl p-4 w-full lg:w-96 shadow-lg">
+                <h2 class="font-semibold mb-2"><i class="fa-solid fa-list-check mr-2"></i>Índice</h2>
+                <ol class="grid grid-cols-1 gap-2 text-sm">
+                    <li><a href="#intro" class="hover:underline">0. Introducción</a></li>
+                    <li><a href="#if-simple" class="hover:underline">1. If (decisión simple)</a></li>
+                    <li><a href="#if-else" class="hover:underline">2. If / else (doble)</a></li>
+                    <li><a href="#if-elseif" class="hover:underline">3. If / else if / else (múltiple)</a></li>
+                    <li><a href="#ternario" class="hover:underline">4. Operador ternario</a></li>
+                    <li><a href="#switch" class="hover:underline">5. Switch</a></li>
+                    <li><a href="#for" class="hover:underline">6. Bucle for</a></li>
+                    <li><a href="#while" class="hover:underline">7. Bucle while</a></li>
+                    <li><a href="#do-while" class="hover:underline">8. Bucle do...while</a></li>
+                    <li><a href="#comparativa" class="hover:underline">9. Comparativa</a></li>
+                    <li><a href="#retos" class="hover:underline font-semibold">Retos</a></li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<main class="container mx-auto px-6 py-10">
+
+    <!-- Introducción -->
+    <section id="intro" class="mb-10 section card-gradient rounded-xl shadow anchor">
+        <div class="p-6">
+            <h2 class="text-2xl font-semibold section-title">
+                <i class="fa-solid fa-lightbulb mr-2"></i> ¿Qué son las estructuras de control?
+            </h2>
+            <p class="mt-2 text-gray-700">Son instrucciones que <span class="key-term">dirigen el flujo</span> de un programa según condiciones (<span class="key-term">decisiones</span>) o repeticiones (<span class="key-term">bucles</span>). En esta guía usamos sólo <strong>variables y constantes</strong> (sin arreglos ni objetos) para que el enfoque sea 100% en la lógica base.</p>
+        </div>
+    </section>
+
+    <!-- 1. If simple -->
+    <section id="if-simple" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-toggle-on mr-2"></i> 1) If — Decisión simple</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p><span class="key-term">Definición:</span> ejecuta un bloque <em>sólo si</em> la condición es verdadera.</p>
+            <div class="mt-3">
+                <span class="chip">Sintaxis</span>
+                <pre class="mt-2"><code><span class="hl" data-tip="Evalúa a verdadero o falso" data-step="1">if (condicion)</span> {
+  <span class="hl" data-tip="Se ejecuta si la condición es verdadera" data-step="2">// instrucciones</span>
+}</code></pre>
+            </div>
+
+            <div class="mt-5 grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn explain-btn"><i class="fa-solid fa-highlighter"></i> Explicarme</button>
+                        <button class="btn play-btn" data-target="#out-if-simple" data-run="runIfSimple"><i class="fa-solid fa-play"></i> Simular</button>
+                        <button class="btn step-btn" data-target="prev"><i class="fa-solid fa-backward-step"></i></button>
+                        <button class="btn step-btn" data-target="next"><i class="fa-solid fa-forward-step"></i></button>
+                    </div>
+                    <pre class="code"><code>// Ejemplo corto: verificar mayoría de edad
+const edad = 20;
+if (edad >= 18) {
+  console.log("Puede votar");
+}
+</code></pre>
+                    <div class="output mt-2" id="out-if-simple" aria-live="polite"></div>
+                </div>
+
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn explain-btn"><i class="fa-solid fa-highlighter"></i> Explicarme</button>
+                        <button class="btn play-btn" data-target="#out-if-simple-real" data-run="runIfSimpleReal"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>
+let saldo = 120000; // COP
+let minimo = 1000000;
+if (saldo < minimo) {
+  console.log("⚠️ Recarga tu cuenta: saldo bajo");
+}
+</code></pre>
+                    <div class="output mt-2" id="out-if-simple-real" aria-live="polite"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. If / else -->
+    <section id="if-else" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-arrows-left-right mr-2"></i> 2) If / else — Decisión doble</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p><span class="key-term">Definición:</span> elige entre dos caminos: si la condición es verdadera ejecuta el primer bloque; de lo contrario, el segundo.</p>
+            <div class="mt-3">
+                <span class="chip">Sintaxis</span>
+                <pre class="mt-2"><code>if (condicion) {
+  // bloque verdadero
+} else {
+  // bloque falso
+}</code></pre>
+            </div>
+            <div class="mt-5 grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-if-else" data-run="runIfElse"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Ejemplo corto: par o impar
+const numero = 7;
+if (numero % 2 === 0) {
+  console.log("Par");
+} else {
+  console.log("Impar");
+}
+</code></pre>
+                    <div class="output mt-2" id="out-if-else"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-if-else-real" data-run="runIfElseReal"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Ejemplo aplicado: envío gratis según monto
+const monto = 85_000; // COP
+const umbral = 80_000;
+if (monto >= umbral) {
+  console.log("🎁 Envío gratis aplicado");
+} else {
+  console.log("Envío: 9.900 COP");
+}
+</code></pre>
+                    <div class="output mt-2" id="out-if-else-real"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. If / else if / else (múltiple) -->
+    <section id="if-elseif" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-list-ol mr-2"></i> 3) If / else if / else — Decisión múltiple</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p><span class="key-term">Definición:</span> encadena varias condiciones excluyentes. Evalúa de arriba hacia abajo, se ejecuta el <em>primer</em> bloque que cumpla.</p>
+            <div class="mt-3">
+                <span class="chip">Sintaxis</span>
+                <pre class="mt-2"><code>if (condicion1) {
+  // bloque 1
+} else if (condicion2) {
+  // bloque 2
+} else {
+  // por defecto
+}</code></pre>
+            </div>
+            <div class="mt-5 grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-elseif" data-run="runIfElseIf"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Ejemplo corto: calificación numérica a texto
+const nota = 78;
+if (nota >= 90) {
+  console.log("Excelente");
+} else if (nota >= 70) {
+  console.log("Aprobado");
+} else {
+  console.log("Reprobado");
+}
+</code></pre>
+                    <div class="output mt-2" id="out-elseif"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-elseif-real" data-run="runIfElseIfReal"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Ejemplo aplicado: tarifas de luz por consumo (kWh)
+const consumo = 210;
+let tarifa;
+if (consumo <= 100) {
+  tarifa = 500; // COP por kWh
+} else if (consumo <= 200) {
+  tarifa = 650;
+} else {
+  tarifa = 800;
+}
+const total = consumo * tarifa;
+console.log("Total a pagar:", total, "COP");
+</code></pre>
+                    <div class="output mt-2" id="out-elseif-real"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Ternario -->
+    <section id="ternario" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-arrow-right-arrow-left mr-2"></i> 4) Operador Ternario</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p><span class="key-term">Definición:</span> forma abreviada de if/else que <em>retorna un valor</em>.</p>
+            <div class="mt-3">
+                <span class="chip">Sintaxis</span>
+                <pre class="mt-2"><code>const resultado = <span class="hl" data-tip="Debe evaluarse a verdadero/falso">condicion</span> <span class="hl" data-tip="Si es verdadero">?</span> valorSi <span class="hl" data-tip="Si es falso">:</span> valorNo;</code></pre>
+            </div>
+            <div class="mt-5 grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-tern" data-run="runTernario"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Ejemplo corto: mayor de edad
+const edad = 16;
+const esMayor = (edad >= 18) ? "Sí" : "No";
+console.log("¿Mayor de edad?", esMayor);
+</code></pre>
+                    <div class="output mt-2" id="out-tern"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-tern-real" data-run="runTernarioReal"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Ejemplo aplicado: estado de temperatura
+const temperatura = 31; // °C
+const estado = (temperatura >= 30) ? "Caliente" : "Agradable";
+console.log("Clima:", estado);
+</code></pre>
+                    <div class="output mt-2" id="out-tern-real"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Switch -->
+    <section id="switch" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-sliders mr-2"></i> 5) Switch</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p><span class="key-term">Definición:</span> selecciona un caso entre múltiples alternativas por <em>igualdad estricta</em> (===).</p>
+            <div class="mt-3">
+                <span class="chip">Sintaxis</span>
+                <pre class="mt-2"><code>switch (expresion) {
+  case valor1:
+    // instrucciones
+    break;
+  case valor2:
+    // instrucciones
+    break;
+  default:
+    // por defecto
+}</code></pre>
+            </div>
+            <div class="mt-5 grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-switch" data-run="runSwitch"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Ejemplo corto: día de la semana
+const dia = 3; // 1=Lun ... 7=Dom
+let nombre;
+switch (dia) {
+  case 1: nombre = "Lunes"; break;
+  case 2: nombre = "Martes"; break;
+  case 3: nombre = "Miércoles"; break;
+  case 4: nombre = "Jueves"; break;
+  case 5: nombre = "Viernes"; break;
+  case 6: nombre = "Sábado"; break;
+  default: nombre = "Domingo";
+}
+console.log(nombre);
+</code></pre>
+                    <div class="output mt-2" id="out-switch"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-switch-real" data-run="runSwitchReal"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Ejemplo aplicado: precio por plan
+const plan = "pro"; // basic | pro | premium
+let precio;
+switch (plan) {
+  case "basic": precio = 15_000; break;
+  case "pro": precio = 35_000; break;
+  case "premium": precio = 55_000; break;
+  default: precio = 0;
+}
+console.log("Precio mensual:", precio, "COP");
+</code></pre>
+                    <div class="output mt-2" id="out-switch-real"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. For -->
+    <section id="for" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-repeat mr-2"></i> 6) Bucle for</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p><span class="key-term">Definición:</span> repite un bloque un número conocido de veces: <em>inicio</em> → <em>condición</em> → <em>incremento</em>.</p>
+            <div class="mt-3">
+                <span class="chip">Sintaxis</span>
+                <pre class="mt-2"><code>for (<span class="hl" data-tip="Inicialización">inicio</span>; <span class="hl" data-tip="Cuándo seguir">condicion</span>; <span class="hl" data-tip="Cómo avanzar">incremento</span>) {
+  // instrucciones
+}</code></pre>
+            </div>
+            <div class="mt-5 grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-for" data-run="runFor"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Ejemplo corto: suma 1..n
+const n = 5;
+let suma = 0;
+for (let i = 1; i <= n; i++) {
+  suma = suma + i;
+}
+console.log("Suma =", suma);
+</code></pre>
+                    <div class="output mt-2" id="out-for"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-for-real" data-run="runForReal"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Ejemplo aplicado: interés simple diario 30 días
+const capital = 1_000_000; // COP
+const tasaDiaria = 0.0005; // 0.05%
+let total = capital;
+for (let d = 1; d <= 30; d++) {
+  total = total + (capital * tasaDiaria);
+}
+console.log("Total tras 30 días:", Math.round(total), "COP");
+</code></pre>
+                    <div class="output mt-2" id="out-for-real"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. While -->
+    <section id="while" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-arrows-rotate mr-2"></i> 7) Bucle while</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p><span class="key-term">Definición:</span> repite mientras la condición sea verdadera. Útil cuando <em>no</em> sabes exactamente cuántas vueltas darás.</p>
+            <div class="mt-3">
+                <span class="chip">Sintaxis</span>
+                <pre class="mt-2"><code>while (condicion) {
+  // instrucciones
+}</code></pre>
+            </div>
+            <div class="mt-5 grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-while" data-run="runWhile"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Ejemplo corto: cuenta regresiva
+let x = 3;
+while (x > 0) {
+  console.log("x =", x);
+  x = x - 1;
+}
+console.log("Despegue!");
+</code></pre>
+                    <div class="output mt-2" id="out-while"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-while-real" data-run="runWhileReal"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Ejemplo aplicado: ahorrar hasta meta
+let ahorro = 0;
+const meta = 50_000;
+const deposito = 7_000;
+while (ahorro < meta) {
+  ahorro = ahorro + deposito;
+}
+console.log("Meta alcanzada con:", ahorro, "COP");
+</code></pre>
+                    <div class="output mt-2" id="out-while-real"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. Do...while -->
+    <section id="do-while" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-rotate mr-2"></i> 8) Bucle do...while</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p><span class="key-term">Definición:</span> ejecuta <em>al menos una vez</em> y luego repite mientras se cumpla la condición.</p>
+            <div class="mt-3">
+                <span class="chip">Sintaxis</span>
+                <pre class="mt-2"><code>do {
+  // instrucciones
+} while (condicion);
+</code></pre>
+            </div>
+            <div class="mt-5 grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-do" data-run="runDoWhile"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Ejemplo corto: ejecutar al menos una vez
+let intentos = 0;
+let listo = false;
+do {
+  intentos = intentos + 1;
+  listo = (intentos >= 1);
+} while (!listo);
+console.log("Intentos:", intentos);
+</code></pre>
+                    <div class="output mt-2" id="out-do"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-do-real" data-run="runDoWhileReal"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Ejemplo aplicado: reintentos de conexión (máximo 3)
+let conectado = false;
+let reintento = 0;
+do {
+  reintento = reintento + 1;
+  // Simulación: se conecta en el 2º intento
+  conectado = (reintento === 2);
+} while (!conectado && reintento < 3);
+console.log("Conectado:", conectado, "en intento", reintento);
+</code></pre>
+                    <div class="output mt-2" id="out-do-real"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparativa -->
+    <section id="comparativa" class="mb-12 section card-gradient rounded-xl shadow anchor">
+        <div class="p-6">
+            <h3 class="text-2xl font-semibold mb-3 section-title"><i class="fa-solid fa-table mr-2"></i> 9) Comparativa rápida</h3>
+            <div class="overflow-x-auto">
+                <table>
+                    <tr>
+                        <th>Estructura</th><th>Cuándo usar</th><th>Clave</th>
+                    </tr>
+                    <tr>
+                        <td>if</td><td>Una condición simple</td><td>Ejecuta o no</td>
+                    </tr>
+                    <tr>
+                        <td>if/else</td><td>Dos caminos excluyentes</td><td>Verdadero vs falso</td>
+                    </tr>
+                    <tr>
+                        <td>if/else if/else</td><td>Rangos o varias reglas</td><td>Orden importa</td>
+                    </tr>
+                    <tr>
+                        <td>ternario</td><td>Asignar según condición</td><td>Expresión compacta</td>
+                    </tr>
+                    <tr>
+                        <td>switch</td><td>Casos fijos por valor</td><td>Recuerda <code>break</code></td>
+                    </tr>
+                    <tr>
+                        <td>for</td><td>Vueltas conocidas</td><td>Contador</td>
+                    </tr>
+                    <tr>
+                        <td>while</td><td>Hasta que pase algo</td><td>Condición primero</td>
+                    </tr>
+                    <tr>
+                        <td>do...while</td><td>Ejecutar mínimo una vez</td><td>Condición después</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Retos -->
+    <section id="retos" class="mb-16 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-trophy mr-2"></i> Retos sugeridos</h2>
+        <div class="p-6 bg-white rounded-xl shadow grid md:grid-cols-3 gap-4 text-sm">
+            <div class="bg-white rounded-lg p-4 shadow">
+                <p class="font-semibold mb-1">Semáforo (if)</p>
+                <p>Según el color en una variable (<code>"rojo"|"amarillo"|"verde"</code>) imprime la acción.</p>
+            </div>
+            <div class="bg-white rounded-lg p-4 shadow">
+                <p class="font-semibold mb-1">Notas (múltiple)</p>
+                <p>Convierte una nota 0–100 en A/B/C/D/F con <code>if/else if</code> o <code>switch</code>.</p>
+            </div>
+            <div class="bg-white rounded-lg p-4 shadow">
+                <p class="font-semibold mb-1">Ahorro (while)</p>
+                <p>Acumula depósitos hasta una meta y reporta cuántas vueltas diste.</p>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-gray-900 text-gray-200">
+    <div class="container mx-auto px-6 py-10 text-center">
+        <p class="text-lg font-semibold">&copy; 2025 Guía Interactiva — Estructuras de Control</p>
+        <p class="text-sm text-gray-400 mt-1">Diseño con Tailwind y Font Awesome. Colores azul/morado.</p>
+        <div class="mt-3 flex justify-center space-x-4 text-xl">
+            <a class="hover:text-white" href="#if-simple" title="If simple"><i class="fa-solid fa-toggle-on"></i></a>
+            <a class="hover:text-white" href="#for" title="For"><i class="fa-solid fa-repeat"></i></a>
+            <a class="hover:text-white" href="#retos" title="Retos"><i class="fa-solid fa-trophy"></i></a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // =============== Utilidad: copiar bloques <pre><code> =================
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.copy-btn')) {
+            const wrap = e.target.closest('.code-wrap');
+            const code = wrap.querySelector('pre.code code') || wrap.querySelector('pre code');
+            if (!code) return;
+            navigator.clipboard.writeText(code.innerText);
+            const btn = e.target.closest('.copy-btn');
+            const original = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> Copiado';
+            setTimeout(()=> btn.innerHTML = original, 1500);
+        }
+    });
+
+    // =============== Explicaciones: tooltips sobre .hl ======================
+    const tooltip = document.createElement('div');
+    tooltip.className = 'tooltip hidden';
+    document.body.appendChild(tooltip);
+
+    function showTip(target){
+        const tip = target.getAttribute('data-tip');
+        if(!tip) return;
+        tooltip.textContent = tip;
+        tooltip.classList.remove('hidden');
+        const rect = target.getBoundingClientRect();
+        tooltip.style.top = (window.scrollY + rect.top - tooltip.offsetHeight - 8) + 'px';
+        tooltip.style.left = (window.scrollX + rect.left) + 'px';
+        target.classList.add('active');
+    }
+    function hideTip(){
+        tooltip.classList.add('hidden');
+        document.querySelectorAll('.hl.active').forEach(el=> el.classList.remove('active'));
+    }
+
+    document.addEventListener('click', (e)=>{
+        if (e.target.classList.contains('hl')) {
+            showTip(e.target);
+        } else if (e.target.closest('.explain-btn')) {
+            // activar todos los .hl visibles en ese bloque secuencialmente
+            const wrap = e.target.closest('.code-wrap') || e.target.closest('section');
+            const tokens = wrap.querySelectorAll('.hl');
+            let i = 0;
+            const timer = setInterval(()=>{
+                tokens.forEach(t=> t.classList.remove('step-focus'));
+                if (i < tokens.length) {
+                    tokens[i].classList.add('step-focus');
+                    showTip(tokens[i]);
+                    i++;
+                } else {
+                    clearInterval(timer);
+                    hideTip();
+                }
+            }, 900);
+        } else if (!e.target.closest('.tooltip')) {
+            hideTip();
+        }
+    });
+
+    // =============== Simulador: escribe en panel de salida ==================
+    function writeOut(sel, lines){
+        const out = document.querySelector(sel);
+        if(!out) return;
+        out.textContent = '';
+        // animar salida
+        let i = 0;
+        const tick = () => {
+            if (i < lines.length) {
+                out.textContent += (i? '\n' : '') + lines[i];
+                i++;
+                setTimeout(tick, 120);
+            }
+        };
+        tick();
+    }
+
+    const runners = {
+        runIfSimple(){
+            const edad = 20;
+            const out = [];
+            if (edad >= 18) { out.push('Puede votar'); }
+            writeOut('#out-if-simple', out);
+        },
+        runIfSimpleReal(){
+            const saldo = 120000; const minimo = 1000000; const out = [];
+            if (saldo < minimo) { out.push('⚠️ Recarga tu cuenta: saldo bajo'); }
+            writeOut('#out-if-simple-real', out.length? out : ['(Sin alerta)']);
+        },
+        runIfElse(){
+            const numero = 7; const out = [];
+            if (numero % 2 === 0) { out.push('Par'); } else { out.push('Impar'); }
+            writeOut('#out-if-else', out);
+        },
+        runIfElseReal(){
+            const monto = 85000, umbral = 80000; const out = [];
+            if (monto >= umbral) { out.push('🎁 Envío gratis aplicado'); } else { out.push('Envío: 9.900 COP'); }
+            writeOut('#out-if-else-real', out);
+        },
+        runIfElseIf(){
+            const nota = 78; let texto = '';
+            if (nota >= 90) { texto = 'Excelente'; }
+            else if (nota >= 70) { texto = 'Aprobado'; }
+            else { texto = 'Reprobado'; }
+            writeOut('#out-elseif', [texto]);
+        },
+        runIfElseIfReal(){
+            const consumo = 210; let tarifa;
+            if (consumo <= 100) { tarifa = 500; }
+            else if (consumo <= 200) { tarifa = 650; }
+            else { tarifa = 800; }
+            const total = consumo * tarifa;
+            writeOut('#out-elseif-real', ['Total a pagar: ' + total + ' COP']);
+        },
+        runTernario(){
+            const edad = 16; const esMayor = (edad >= 18) ? 'Sí' : 'No';
+            writeOut('#out-tern', ['¿Mayor de edad? ' + esMayor]);
+        },
+        runTernarioReal(){
+            const temperatura = 31; const estado = (temperatura >= 30) ? 'Caliente' : 'Agradable';
+            writeOut('#out-tern-real', ['Clima: ' + estado]);
+        },
+        runSwitch(){
+            const dia = 3; let nombre;
+            switch(dia){
+                case 1: nombre='Lunes'; break;
+                case 2: nombre='Martes'; break;
+                case 3: nombre='Miércoles'; break;
+                case 4: nombre='Jueves'; break;
+                case 5: nombre='Viernes'; break;
+                case 6: nombre='Sábado'; break;
+                default: nombre='Domingo';
+            }
+            writeOut('#out-switch', [nombre]);
+        },
+        runSwitchReal(){
+            const plan = 'pro'; let precio;
+            switch(plan){
+                case 'basic': precio = 15000; break;
+                case 'pro': precio = 35000; break;
+                case 'premium': precio = 55000; break;
+                default: precio = 0;
+            }
+            writeOut('#out-switch-real', ['Precio mensual: ' + precio + ' COP']);
+        },
+        runFor(){
+            const n = 5; let suma = 0; for (let i=1;i<=n;i++){ suma = suma + i; }
+            writeOut('#out-for', ['Suma = ' + suma]);
+        },
+        runForReal(){
+            const capital = 1000000; const tasaDiaria = 0.0005; let total = capital;
+            for (let d=1; d<=30; d++){ total = total + (capital * tasaDiaria); }
+            writeOut('#out-for-real', ['Total tras 30 días: ' + Math.round(total) + ' COP']);
+        },
+        runWhile(){
+            let x = 3; const out = [];
+            while(x>0){ out.push('x = ' + x); x = x - 1; }
+            out.push('Despegue!');
+            writeOut('#out-while', out);
+        },
+        runWhileReal(){
+            let ahorro = 0; const meta = 50000; const deposito = 7000; const out = [];
+            while(ahorro < meta){ ahorro = ahorro + deposito; out.push('Ahorro: ' + ahorro); }
+            out.push('Meta alcanzada con: ' + ahorro + ' COP');
+            writeOut('#out-while-real', out);
+        },
+        runDoWhile(){
+            let intentos = 0; let listo = false; const out = [];
+            do { intentos = intentos + 1; listo = (intentos >= 1); out.push('Intento ' + intentos); } while(!listo);
+            out.push('Listo en ' + intentos + ' intento(s)');
+            writeOut('#out-do', out);
+        },
+        runDoWhileReal(){
+            let conectado = false; let reintento = 0; const out = [];
+            do { reintento = reintento + 1; conectado = (reintento === 2); out.push('Intento ' + reintento + ': ' + (conectado? 'OK' : 'falló')); } while(!conectado && reintento < 3);
+            out.push('Conectado: ' + conectado + ' en intento ' + reintento);
+            writeOut('#out-do-real', out);
+        }
+    };
+
+    document.addEventListener('click', (e)=>{
+        const play = e.target.closest('.play-btn');
+        if (play) {
+            const fn = play.getAttribute('data-run');
+            if (fn && typeof runners[fn] === 'function') runners[fn]();
+        }
+    });
+
+    // =============== Tour por pasos (Prev/Next) ============================
+    (function(){
+        let stepIndex = 0; let currentTokens = [];
+        function updateFocus(){
+            currentTokens.forEach(el=> el.classList.remove('step-focus'));
+            if (currentTokens[stepIndex]) currentTokens[stepIndex].classList.add('step-focus');
+        }
+        document.addEventListener('click', (e)=>{
+            const btn = e.target.closest('.step-btn');
+            if (!btn) return;
+            const wrap = btn.closest('.code-wrap');
+            currentTokens = Array.from(wrap.querySelectorAll('[data-step]'));
+            if (!currentTokens.length) return;
+            if (btn.getAttribute('data-target') === 'next') { stepIndex = Math.min(stepIndex+1, currentTokens.length-1); }
+            else { stepIndex = Math.max(stepIndex-1, 0); }
+            updateFocus();
+        });
+    })();
+</script>
+</body>
+</html>
