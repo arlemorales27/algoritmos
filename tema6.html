@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JS 2025: Funciones Flecha y Arrays — Guía Interactiva</title>
+    <!-- Tailwind 2.x CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        :root{
+            --azul:#1D4ED8; /* Indigo-700 */
+            --morado:#6B46C1; /* Purple-700 */
+            --azulClaro:#3B82F6; /* Blue-500 */
+        }
+        html{scroll-behavior:smooth}
+        .key-term{color:var(--azul);font-weight:700}
+        .section-title{color:var(--morado)}
+        .section{border-left:4px solid var(--azulClaro);padding-left:1rem}
+        pre{background:#f6f8fa;padding:1rem;border-radius:12px;overflow-x:auto}
+        code{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+        .chip{background:rgba(59,130,246,.1);color:#1e40af;padding:.25rem .6rem;border-radius:9999px;font-size:.75rem}
+        .card-gradient{background:linear-gradient(135deg, rgba(29,78,216,.08), rgba(107,70,193,.06));}
+        .shine{position:relative;overflow:hidden}
+        .shine::after{content:"";position:absolute;top:-120%;left:-120%;width:240%;height:240%;background:linear-gradient(120deg, transparent 40%, rgba(255,255,255,.25), transparent 60%);transform:rotate(10deg);animation:shine 7s infinite}
+        @keyframes shine{0%{transform:translateX(-120%) rotate(10deg)}100%{transform:translateX(120%) rotate(10deg)}}
+        .anchor:before{content:"";display:block;height:80px;margin-top:-80px;visibility:hidden}
+        table{width:100%;border-collapse:collapse;margin:1rem 0}
+        th,td{border:1px solid #e5e7eb;padding:.75rem;text-align:left}
+        th{background-color:var(--azulClaro);color:#fff}
+        .code-wrap{position:relative}
+        .code-toolbar{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.5rem}
+        .btn{font-size:.8rem;border:1px solid #d1d5db;padding:.35rem .6rem;border-radius:.75rem;background:#fff;display:inline-flex;align-items:center;gap:.4rem}
+        .btn:hover{box-shadow:0 2px 10px rgba(0,0,0,.06)}
+        .btn[disabled]{opacity:.5;cursor:not-allowed}
+        .hl{background:rgba(59,130,246,.16);padding:.05rem .15rem;border-radius:.25rem;cursor:pointer}
+        .hl.active{outline:2px solid var(--azulClaro)}
+        .tooltip{position:absolute;z-index:20;background:#111827;color:#F9FAFB;padding:.5rem .65rem;border-radius:.5rem;font-size:.8rem;box-shadow:0 8px 30px rgba(0,0,0,.25);max-width:260px}
+        .tooltip::after{content:"";position:absolute;border:7px solid transparent;border-top-color:#111827;bottom:-14px;left:12px}
+        .output{background:#0b1220;color:#D1E7FF;border-radius:.75rem;padding:.75rem;min-height:2.25rem;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+        .step-focus{background:linear-gradient(90deg, rgba(59,130,246,.18), rgba(107,70,193,.18));border-radius:.35rem}
+        .badge{display:inline-flex;align-items:center;gap:.35rem;background:rgba(107,70,193,.12);color:#5b21b6;border:1px solid rgba(107,70,193,.25);padding:.2rem .5rem;border-radius:9999px;font-size:.72rem}
+        .badge i{font-size:.8rem}
+        @media(min-width:1024px){nav[aria-label="Contenido"]{position:sticky;top:1rem;height:fit-content}}
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+<header class="relative bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 text-white">
+    <div class="absolute inset-0 opacity-20 bg-center bg-cover" style="background-image:url('https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=1600&auto=format&fit=crop');"></div>
+    <div class="container mx-auto px-6 py-14 relative">
+        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            <div>
+                <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight shine">
+                    <i class="fa-solid fa-code mr-3"></i> Guía Interactiva de JavaScript 2025 — Flechas & Arrays
+                </h1>
+                <p class="mt-3 text-lg text-blue-100 max-w-3xl">De <span class="font-semibold">funciones flecha</span> a <span class="font-semibold">arrays modernos</span> (<code>at</code>, <code>toSorted</code>, <code>with</code>, <code>findLast</code>…), con simulaciones, buenas prácticas e indicadores de <strong>Novedades 2023–2025</strong>.</p>
+                <div class="mt-4 space-x-2">
+                    <span class="chip"><i class="fa-solid fa-graduation-cap mr-1"></i>Básico a Intermedio</span>
+                    <span class="chip"><i class="fa-solid fa-laptop-code mr-1"></i>JavaScript</span>
+                    <span class="chip"><i class="fa-solid fa-hand-pointer mr-1"></i>Interactivo</span>
+                </div>
+            </div>
+            <nav aria-label="Contenido" class="bg-white/10 backdrop-filter backdrop-blur rounded-2xl p-4 w-full lg:w-[28rem] shadow-lg">
+                <h2 class="font-semibold mb-2"><i class="fa-solid fa-list-check mr-2"></i>Índice</h2>
+                <ol class="grid grid-cols-1 gap-2 text-sm">
+                    <li><a href="#intro" class="hover:underline">0. Introducción</a></li>
+                    <li><a href="#flecha" class="hover:underline">1. Funciones flecha: ¿qué son?</a></li>
+                    <li><a href="#flecha-patrones" class="hover:underline">2. Patrones: parámetros & retorno</a></li>
+                    <li><a href="#arrays-que" class="hover:underline">3. Arrays & estructura de datos</a></li>
+                    <li><a href="#arrays-basico" class="hover:underline">4. Crear, vaciar, concatenar, length</a></li>
+                    <li><a href="#arrays-lectura" class="hover:underline">5. Lectura: <code>at</code> (👶→👴)</a></li>
+                    <li><a href="#mutables" class="hover:underline">6. Mutables: push/pop/shift/unshift/splice</a></li>
+                    <li><a href="#inmutables" class="hover:underline">7. Inmutables: slice/concat/spread</a></li>
+                    <li><a href="#orden" class="hover:underline">8. Ordenar: sort vs <code>toSorted</code> <span class="badge"><i class="fa-solid fa-sparkles"></i>Novedad</span></a></li>
+                    <li><a href="#buscar" class="hover:underline">9. Buscar: find/findIndex/findLast*</a></li>
+                    <li><a href="#map-filter" class="hover:underline">10. map / filter / flatMap</a></li>
+                    <li><a href="#some-every" class="hover:underline">11. some / every</a></li>
+                    <li><a href="#reduce" class="hover:underline">12. reduce / reduceRight</a></li>
+                    <li><a href="#otras" class="hover:underline">13. Otras útiles: includes, join, flat</a></li>
+                    <li><a href="#novedades" class="hover:underline">14. 2023–2025: <code>toReversed</code>, <code>toSpliced</code>, <code>with</code></a></li>
+                    <li><a href="#retos" class="hover:underline font-semibold">Retos</a></li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<main class="container mx-auto px-6 py-10">
+    <!-- Intro -->
+    <section id="intro" class="mb-10 section card-gradient rounded-xl shadow anchor">
+        <div class="p-6">
+            <h2 class="text-2xl font-semibold section-title"><i class="fa-solid fa-lightbulb mr-2"></i> ¿Por qué funciones flecha + arrays?</h2>
+            <p class="mt-2 text-gray-700">Las <span class="key-term">funciones flecha</span> simplifican la sintaxis y encajan perfecto con los <span class="key-term">métodos de arrays</span>, que suelen <em>recibir funciones</em> como parámetros. Con esta dupla podrás transformar, filtrar, ordenar y agregar datos de forma clara y moderna.</p>
+        </div>
+    </section>
+
+    <!-- 1. Funciones flecha -->
+    <section id="flecha" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-bolt mr-2"></i> 1) Función flecha: ¿qué es?</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p>Una <span class="key-term">función flecha</span> es una forma abreviada de declarar funciones: <code>(parámetros) =&gt; expresión</code>. No tiene <code>this</code> propio y soporta <em>retorno implícito</em> cuando el cuerpo es una sola expresión.</p>
+            <div class="mt-4 grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-f1" data-run="runF1"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Sin parámetros, sin retorno
+afterLoad(() => console.log("🔔 Listo!"));
+// Implementación mínima\const afterLoad = fn => fn();
+</code></pre>
+                    <div class="output mt-2" id="out-f1"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-f2" data-run="runF2"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Con un parámetro y retorno implícito
+const doble = x => x * 2;
+console.log(doble(7)); // 14
+</code></pre>
+                    <div class="output mt-2" id="out-f2"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. Patrones -->
+    <section id="flecha-patrones" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-diagram-project mr-2"></i> 2) Patrones de parámetros & retorno</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-p1" data-run="runP1"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Con parámetros y retorno explícito
+const totalConIVA = (subtotal, iva) => {
+  const impuesto = subtotal * iva;
+  return subtotal + impuesto;
+};
+console.log(totalConIVA(85000, 0.19));
+</code></pre>
+                    <div class="output mt-2" id="out-p1"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-p2" data-run="runP2"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Retornar un objeto literal
+const crearTicket = (codigo, total) => ({ codigo, total });
+const t = crearTicket("A-01", 55000);
+console.log(`${t.codigo} - ${t.total} COP`);
+</code></pre>
+                    <div class="output mt-2" id="out-p2"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Arrays Qué es una estructura de datos -->
+    <section id="arrays-que" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-layer-group mr-2"></i> 3) Arrays y estructura de datos</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p><span class="key-term">Estructura de datos</span>: forma de organizar la información para operar con ella eficientemente. Un <span class="key-term">array</span> es una colección ordenada de elementos accesibles por índice (<code>0..n-1</code>).</p>
+            <pre class="mt-3"><code>// Ejemplos de arrays
+const numeros = [10, 20, 30];
+const nombres = ["Ana", "Luis", "Zoe"];
+const mixto   = ["ID-1", 99, true, { ok: true }];
+</code></pre>
+        </div>
+    </section>
+
+    <!-- 4. Crear, vaciar, concatenar, length -->
+    <section id="arrays-basico" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-screwdriver-wrench mr-2"></i> 4) Crear, array vacío, concatenar y length</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-b1" data-run="runBasico1"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Array vacío y length
+let carrito = [];
+carrito.length; // 0
+carrito.push("Mouse");
+carrito.length; // 1
+</code></pre>
+                    <div class="output mt-2" id="out-b1"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-b2" data-run="runBasico2"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Concatenar con spread (...)
+const a = [1,2];
+const b = [3,4];
+const ab = [...a, ...b]; // [1,2,3,4]
+</code></pre>
+                    <div class="output mt-2" id="out-b2"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. at() -->
+    <section id="arrays-lectura" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-magnifying-glass mr-2"></i> 5) Lectura moderna con <code>at</code></h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p><code>at(i)</code> lee por índice, soporta negativos: <code>-1</code> = último.</p>
+            <div class="code-wrap">
+                <div class="code-toolbar">
+                    <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                    <button class="btn play-btn" data-target="#out-at" data-run="runAt"><i class="fa-solid fa-play"></i> Simular</button>
+                </div>
+                <pre class="code"><code>const xs = [10, 20, 30, 40];
+xs.at(0);   // 10
+xs.at(-1);  // 40 (último)
+</code></pre>
+                <div class="output mt-2" id="out-at"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Mutables -->
+    <section id="mutables" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-wrench mr-2"></i> 6) Métodos <em>mutables</em></h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p>Estos <strong>modifican</strong> el array original.</p>
+            <ul class="list-disc pl-6 text-gray-700 mb-4">
+                <li><code>push(...)</code>: agrega al final</li>
+                <li><code>pop()</code>: quita último</li>
+                <li><code>shift()</code>: quita primero</li>
+                <li><code>unshift(...)</code>: agrega al inicio</li>
+                <li><code>splice(i, n, ...items)</code>: inserta/borra en medio</li>
+            </ul>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-m1" data-run="runMut1"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>let cola = ["A","B"];
+cola.push("C");   // ["A","B","C"]
+cola.pop();        // ["A","B"]
+cola.unshift("Z"); // ["Z","A","B"]
+cola.shift();      // ["A","B"]
+</code></pre>
+                    <div class="output mt-2" id="out-m1"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-m2" data-run="runMut2"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>let items = ["A","B","D"];
+items.splice(2, 0, "C"); // inserta en i=2 → ["A","B","C","D"]
+items.splice(1, 2);      // borra 2 desde i=1 → ["A","D"]
+</code></pre>
+                    <div class="output mt-2" id="out-m2"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. Inmutables -->
+    <section id="inmutables" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-shield-heart mr-2"></i> 7) Métodos <em>inmutables</em> (preferidos en UI)</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p>No alteran el original: crean una <em>copia</em>.</p>
+            <ul class="list-disc pl-6 text-gray-700 mb-4">
+                <li><code>slice(i, j)</code>: recorta</li>
+                <li><code>concat(...)</code> / <code>[...a,...b]</code>: une</li>
+                <li><code>toSorted(fn)</code>, <code>toReversed()</code>, <code>toSpliced(...)</code> <span class="badge"><i class="fa-solid fa-sparkles"></i>Novedad</span></li>
+            </ul>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-in1" data-run="runIn1"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>const base = [3,1,2];
+const ordenado = base.toSorted(); // [1,2,3]
+base; // [3,1,2] (intacto)
+</code></pre>
+                    <div class="output mt-2" id="out-in1"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-in2" data-run="runIn2"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>const xs = [1,2,3,4];
+const sin2 = xs.toSpliced(1,1); // [1,3,4]
+const rev  = xs.toReversed();   // [4,3,2,1]
+</code></pre>
+                    <div class="output mt-2" id="out-in2"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. Orden -->
+    <section id="orden" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-arrow-down-short-wide mr-2"></i> 8) Ordenar: <code>sort</code> vs <code>toSorted</code></h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p><code>sort</code> <strong>muta</strong>; <code>toSorted</code> devuelve copia. Pasa una <span class="key-term">función flecha</span> de comparación: <code>(a,b) =&gt; a-b</code> numérico ascendente.</p>
+            <div class="code-wrap">
+                <div class="code-toolbar">
+                    <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                    <button class="btn play-btn" data-target="#out-sort" data-run="runSort"><i class="fa-solid fa-play"></i> Simular</button>
+                </div>
+                <pre class="code"><code>const precios = [120, 60, 300];
+const asc = precios.toSorted((a,b) => a-b);    // [60,120,300]
+const desc = precios.toSorted((a,b) => b-a);   // [300,120,60]
+</code></pre>
+                <div class="output mt-2" id="out-sort"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. Buscar -->
+    <section id="buscar" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-binoculars mr-2"></i> 9) Buscar: find*, index*</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <ul class="list-disc pl-6 text-gray-700 mb-4">
+                <li><code>find(fn)</code>: primer elemento que cumple</li>
+                <li><code>findIndex(fn)</code>: índice del primero</li>
+                <li><code>findLast(fn)</code> y <code>findLastIndex(fn)</code>: desde el final <span class="badge"><i class="fa-solid fa-sparkles"></i>Novedad</span></li>
+            </ul>
+            <div class="code-wrap">
+                <div class="code-toolbar">
+                    <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                    <button class="btn play-btn" data-target="#out-find" data-run="runFind"><i class="fa-solid fa-play"></i> Simular</button>
+                </div>
+                <pre class="code"><code>const data = [5,12,8,130,44];
+const gt10 = data.find(x => x > 10);        // 12
+const lastEven = data.findLast(x => x%2===0); // 44
+</code></pre>
+                <div class="output mt-2" id="out-find"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. map / filter / flatMap -->
+    <section id="map-filter" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-shapes mr-2"></i> 10) Transformar: map / filter / flatMap</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-map" data-run="runMap"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>const nums = [1,2,3];
+const cuadrados = nums.map(n => n*n); // [1,4,9]
+</code></pre>
+                    <div class="output mt-2" id="out-map"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-filter" data-run="runFilter"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>const personas = [
+  {nombre:"Ana", edad:19},
+  {nombre:"Luis", edad:25},
+  {nombre:"Zoe", edad:16}
+];
+const mayores = personas.filter(p => p.edad >= 18).map(p => p.nombre);
+// ["Ana","Luis"]
+</code></pre>
+                    <div class="output mt-2" id="out-filter"></div>
+                </div>
+            </div>
+            <div class="code-wrap mt-6">
+                <div class="code-toolbar">
+                    <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                    <button class="btn play-btn" data-target="#out-flatmap" data-run="runFlatMap"><i class="fa-solid fa-play"></i> Simular</button>
+                </div>
+                <pre class="code"><code>// flatMap: map + aplanado 1 nivel
+const frases = ["hola mundo", "js moderno"];
+const palabras = frases.flatMap(s => s.split(" "));
+// ["hola","mundo","js","moderno"]
+</code></pre>
+                <div class="output mt-2" id="out-flatmap"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 11. some / every -->
+    <section id="some-every" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-check-double mr-2"></i> 11) Validación: some / every</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <div class="code-wrap">
+                <div class="code-toolbar">
+                    <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                    <button class="btn play-btn" data-target="#out-someevery" data-run="runSomeEvery"><i class="fa-solid fa-play"></i> Simular</button>
+                </div>
+                <pre class="code"><code>const stock = [5, 0, 3, 8];
+const hayAgotados = stock.some(x => x === 0);   // true
+const todosPositivos = stock.every(x => x >= 0); // true
+</code></pre>
+                <div class="output mt-2" id="out-someevery"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 12. reduce -->
+    <section id="reduce" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-equals mr-2"></i> 12) Agregación: reduce / reduceRight</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-red1" data-run="runReduce1"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>const ventas = [120, 60, 300];
+const total = ventas.reduce((acc, n) => acc + n, 0); // 480
+</code></pre>
+                    <div class="output mt-2" id="out-red1"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-red2" data-run="runReduce2"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Contar por categoría
+const items = ["a","b","a","c","b","a"];
+const conteo = items.reduce((acc, it) => {
+  acc[it] = (acc[it]||0) + 1; return acc;
+}, {});
+// {a:3, b:2, c:1}
+</code></pre>
+                    <div class="output mt-2" id="out-red2"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 13. Otras útiles -->
+    <section id="otras" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-toolbox mr-2"></i> 13) Otras funciones útiles</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-otras1" data-run="runOtras1"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>const tags = ["js","web","js"];
+const tieneWeb = tags.includes("web"); // true
+const unidos = tags.join(",");         // "js,web,js"
+</code></pre>
+                    <div class="output mt-2" id="out-otras1"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-otras2" data-run="runOtras2"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Aplanar niveles
+const anidado = [1,[2,[3]]];
+const plano1 = anidado.flat(1); // [1,2,[3]]
+</code></pre>
+                    <div class="output mt-2" id="out-otras2"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 14. Novedades 2023–2025 -->
+    <section id="novedades" class="mb-16 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-sparkles mr-2"></i> 14) Novedades 2023–2025 en arrays</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <ul class="list-disc pl-6 text-gray-700 mb-4">
+                <li><code>toSorted</code>, <code>toReversed</code>, <code>toSpliced</code>: versiones inmutables.</li>
+                <li><code>findLast</code> / <code>findLastIndex</code>: búsqueda desde el final.</li>
+                <li><code>with(i, valor)</code>: copia con reemplazo en posición <em>i</em>.</li>
+            </ul>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-nov1" data-run="runNov1"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>const base = [10,20,30];
+const reemplazo = base.with(1, 999); // [10,999,30]
+base; // [10,20,30]
+</code></pre>
+                    <div class="output mt-2" id="out-nov1"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-nov2" data-run="runNov2"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>const notas = [7,10,4,9];
+const aprob = notas.toSorted((a,b)=>b-a).findLast(n => n >= 5);
+// mayor aprobada recorriendo desde el final de la copia ordenada
+</code></pre>
+                    <div class="output mt-2" id="out-nov2"></div>
+                </div>
+            </div>
+            <p class="text-sm text-gray-600 mt-4">Tip: estas utilidades facilitan programación <em>inmutable</em> en interfaces (React, Svelte, etc.).</p>
+        </div>
+    </section>
+
+    <!-- Retos -->
+    <section id="retos" class="mb-16 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-trophy mr-2"></i> Retos sugeridos</h2>
+        <div class="p-6 bg-white rounded-xl shadow grid md:grid-cols-3 gap-4 text-sm">
+            <div class="bg-white rounded-lg p-4 shadow">
+                <p class="font-semibold mb-1">Normalizador de datos</p>
+                <p>Con <code>map</code> y <code>filter</code>, estandariza nombres (trim, toLowerCase) y elimina vacíos.</p>
+            </div>
+            <div class="bg-white rounded-lg p-4 shadow">
+                <p class="font-semibold mb-1">Top ventas</p>
+                <p>Usa <code>toSorted</code> + <code>slice</code> para obtener el top 3 sin mutar el original.</p>
+            </div>
+            <div class="bg-white rounded-lg p-4 shadow">
+                <p class="font-semibold mb-1">Dashboard</p>
+                <p>Con <code>reduce</code> resume por categoría y calcula totales.</p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="bg-gray-900 text-gray-200">
+    <div class="container mx-auto px-6 py-10 text-center">
+        <p class="text-lg font-semibold">&copy; 2025 Guía Interactiva — Flechas & Arrays</p>
+        <p class="text-sm text-gray-400 mt-1">Hecho con 💙 y JS moderno.</p>
+        <div class="mt-3 flex justify-center space-x-4 text-xl">
+            <a class="hover:text-white" href="#flecha" title="Flechas"><i class="fa-solid fa-bolt"></i></a>
+            <a class="hover:text-white" href="#arrays-que" title="Arrays"><i class="fa-solid fa-layer-group"></i></a>
+            <a class="hover:text-white" href="#novedades" title="Novedades"><i class="fa-solid fa-sparkles"></i></a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // ======== Copiar código ========
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.copy-btn')) {
+            const wrap = e.target.closest('.code-wrap');
+            const code = wrap.querySelector('pre.code code') || wrap.querySelector('pre code');
+            if (!code) return;
+            navigator.clipboard.writeText(code.innerText);
+            const btn = e.target.closest('.copy-btn');
+            const original = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> Copiado';
+            setTimeout(()=> btn.innerHTML = original, 1500);
+        }
+    });
+
+    // ======== Tooltips en .hl (reservado para futuras explicaciones) ========
+    const tooltip = document.createElement('div');
+    tooltip.className = 'tooltip hidden';
+    document.body.appendChild(tooltip);
+    function showTip(target){
+        const tip = target.getAttribute('data-tip'); if(!tip) return;
+        tooltip.textContent = tip; tooltip.classList.remove('hidden');
+        const rect = target.getBoundingClientRect();
+        tooltip.style.top = (window.scrollY + rect.top - tooltip.offsetHeight - 8) + 'px';
+        tooltip.style.left = (window.scrollX + rect.left) + 'px';
+        target.classList.add('active');
+    }
+    function hideTip(){ tooltip.classList.add('hidden'); document.querySelectorAll('.hl.active').forEach(el=> el.classList.remove('active')); }
+    document.addEventListener('click', (e)=>{ if (!e.target.closest('.tooltip')) { hideTip(); } });
+
+    // ======== Salida animada ========
+    function writeOut(sel, lines){
+        const out = document.querySelector(sel); if(!out) return;
+        out.textContent = ''; let i = 0;
+        const tick = () => { if (i < lines.length) { out.textContent += (i? '\n' : '') + lines[i]; i++; setTimeout(tick, 90);} };
+        tick();
+    }
+
+    // ======== Runners ========
+    const runners = {
+        runF1(){ writeOut('#out-f1', ['🔔 Listo!']); },
+        runF2(){ const doble = x => x*2; writeOut('#out-f2', [String(doble(7))]); },
+        runP1(){ const totalConIVA=(s,iva)=>{const imp=s*iva; return s+imp;}; writeOut('#out-p1', [String(totalConIVA(85000,0.19))]); },
+        runP2(){ const crearTicket=(codigo,total)=>({codigo,total}); const t=crearTicket('A-01',55000); writeOut('#out-p2', [`${t.codigo} - ${t.total} COP`]); },
+
+        runBasico1(){ let carrito=[]; const r1=carrito.length; carrito.push('Mouse'); const r2=carrito.length; writeOut('#out-b1',[`length inicial: ${r1}`, `after push length: ${r2}`]); },
+        runBasico2(){ const a=[1,2], b=[3,4]; const ab=[...a,...b]; writeOut('#out-b2',[JSON.stringify(ab)]); },
+
+        runAt(){ const xs=[10,20,30,40]; writeOut('#out-at',[`xs.at(0) -> ${xs.at(0)}`, `xs.at(-1) -> ${xs.at(-1)}`]); },
+
+        runMut1(){ let cola=['A','B']; cola.push('C'); cola.pop(); cola.unshift('Z'); cola.shift(); writeOut('#out-m1',[JSON.stringify(cola)]); },
+        runMut2(){ let items=['A','B','D']; items.splice(2,0,'C'); items.splice(1,2); writeOut('#out-m2',[JSON.stringify(items)]); },
+
+        runIn1(){ const base=[3,1,2]; const ordenado=base.toSorted(); writeOut('#out-in1',[`base: ${JSON.stringify(base)}`, `ordenado: ${JSON.stringify(ordenado)}`]); },
+        runIn2(){ const xs=[1,2,3,4]; const sin2=xs.toSpliced(1,1); const rev=xs.toReversed(); writeOut('#out-in2',[`toSpliced: ${JSON.stringify(sin2)}`, `toReversed: ${JSON.stringify(rev)}`]); },
+
+        runSort(){ const precios=[120,60,300]; const asc=precios.toSorted((a,b)=>a-b); const desc=precios.toSorted((a,b)=>b-a); writeOut('#out-sort',[`asc: ${JSON.stringify(asc)}`, `desc: ${JSON.stringify(desc)}`]); },
+
+        runFind(){ const data=[5,12,8,130,44]; const gt10=data.find(x=>x>10); const lastEven=data.findLast(x=>x%2===0); writeOut('#out-find',[`find >10: ${gt10}`, `findLast even: ${lastEven}`]); },
+
+        runMap(){ const nums=[1,2,3]; const cuadrados=nums.map(n=>n*n); writeOut('#out-map',[JSON.stringify(cuadrados)]); },
+        runFilter(){ const personas=[{nombre:'Ana',edad:19},{nombre:'Luis',edad:25},{nombre:'Zoe',edad:16}]; const mayores=personas.filter(p=>p.edad>=18).map(p=>p.nombre); writeOut('#out-filter',[JSON.stringify(mayores)]); },
+        runFlatMap(){ const frases=['hola mundo','js moderno']; const palabras=frases.flatMap(s=>s.split(' ')); writeOut('#out-flatmap',[JSON.stringify(palabras)]); },
+
+        runSomeEvery(){ const stock=[5,0,3,8]; const hayAgotados=stock.some(x=>x===0); const todosPositivos=stock.every(x=>x>=0); writeOut('#out-someevery',[`some ==0: ${hayAgotados}`, `every >=0: ${todosPositivos}`]); },
+
+        runReduce1(){ const ventas=[120,60,300]; const total=ventas.reduce((acc,n)=>acc+n,0); writeOut('#out-red1',[`total: ${total}`]); },
+        runReduce2(){ const items=['a','b','a','c','b','a']; const conteo=items.reduce((acc,it)=>{acc[it]=(acc[it]||0)+1; return acc;},{}); writeOut('#out-red2',[JSON.stringify(conteo)]); },
+
+        runOtras1(){ const tags=['js','web','js']; const tiene=tags.includes('web'); const unidos=tags.join(','); writeOut('#out-otras1',[`includes('web'): ${tiene}`, `join(','): ${unidos}`]); },
+        runOtras2(){ const anidado=[1,[2,[3]]]; const plano1=anidado.flat(1); writeOut('#out-otras2',[JSON.stringify(plano1)]); },
+
+        runNov1(){ const base=[10,20,30]; const reemplazo=base.with(1,999); writeOut('#out-nov1',[`base: ${JSON.stringify(base)}`, `with(1,999): ${JSON.stringify(reemplazo)}`]); },
+        runNov2(){ const notas=[7,10,4,9]; const aprob=notas.toSorted((a,b)=>b-a).findLast(n=>n>=5); writeOut('#out-nov2',[`aprob mayor: ${aprob}`]); },
+    };
+
+    document.addEventListener('click', (e)=>{
+        const play = e.target.closest('.play-btn');
+        if (play) {
+            const fn = play.getAttribute('data-run');
+            if (fn && typeof runners[fn] === 'function') runners[fn]();
+        }
+    });
+</script>
+</body>
+</html>
