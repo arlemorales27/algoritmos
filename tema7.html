@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JS 2025: Objetos — Guía Interactiva</title>
+    <!-- Tailwind 2.x CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        :root{
+            --azul:#1D4ED8; /* Indigo-700 */
+            --morado:#6B46C1; /* Purple-700 */
+            --azulClaro:#3B82F6; /* Blue-500 */
+        }
+        html{scroll-behavior:smooth}
+        .key-term{color:var(--azul);font-weight:700}
+        .section-title{color:var(--morado)}
+        .section{border-left:4px solid var(--azulClaro);padding-left:1rem}
+        pre{background:#f6f8fa;padding:1rem;border-radius:12px;overflow-x:auto}
+        code{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+        .chip{background:rgba(59,130,246,.1);color:#1e40af;padding:.25rem .6rem;border-radius:9999px;font-size:.75rem}
+        .card-gradient{background:linear-gradient(135deg, rgba(29,78,216,.08), rgba(107,70,193,.06));}
+        .shine{position:relative;overflow:hidden}
+        .shine::after{content:"";position:absolute;top:-120%;left:-120%;width:240%;height:240%;background:linear-gradient(120deg, transparent 40%, rgba(255,255,255,.25), transparent 60%);transform:rotate(10deg);animation:shine 7s infinite}
+        @keyframes shine{0%{transform:translateX(-120%) rotate(10deg)}100%{transform:translateX(120%) rotate(10deg)}}
+        .anchor:before{content:"";display:block;height:80px;margin-top:-80px;visibility:hidden}
+        table{width:100%;border-collapse:collapse;margin:1rem 0}
+        th,td{border:1px solid #e5e7eb;padding:.75rem;text-align:left}
+        th{background-color:var(--azulClaro);color:#fff}
+        .code-wrap{position:relative}
+        .code-toolbar{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.5rem}
+        .btn{font-size:.8rem;border:1px solid #d1d5db;padding:.35rem .6rem;border-radius:.75rem;background:#fff;display:inline-flex;align-items:center;gap:.4rem}
+        .btn:hover{box-shadow:0 2px 10px rgba(0,0,0,.06)}
+        .btn[disabled]{opacity:.5;cursor:not-allowed}
+        .hl{background:rgba(59,130,246,.16);padding:.05rem .15rem;border-radius:.25rem;cursor:pointer}
+        .hl.active{outline:2px solid var(--azulClaro)}
+        .tooltip{position:absolute;z-index:20;background:#111827;color:#F9FAFB;padding:.5rem .65rem;border-radius:.5rem;font-size:.8rem;box-shadow:0 8px 30px rgba(0,0,0,.25);max-width:260px}
+        .tooltip::after{content:"";position:absolute;border:7px solid transparent;border-top-color:#111827;bottom:-14px;left:12px}
+        .output{background:#0b1220;color:#D1E7FF;border-radius:.75rem;padding:.75rem;min-height:2.25rem;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+        .step-focus{background:linear-gradient(90deg, rgba(59,130,246,.18), rgba(107,70,193,.18));border-radius:.35rem}
+        .badge{display:inline-flex;align-items:center;gap:.35rem;background:rgba(107,70,193,.12);color:#5b21b6;border:1px solid rgba(107,70,193,.25);padding:.2rem .5rem;border-radius:9999px;font-size:.72rem}
+        .badge i{font-size:.8rem}
+        @media(min-width:1024px){nav[aria-label="Contenido"]{position:sticky;top:1rem;height:fit-content}}
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+<header class="relative bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 text-white">
+    <div class="absolute inset-0 opacity-20 bg-center bg-cover" style="background-image:url('https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=1600&auto=format&fit=crop');"></div>
+    <div class="container mx-auto px-6 py-14 relative">
+        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            <div>
+                <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight shine">
+                    <i class="fa-solid fa-cube mr-3"></i> Guía Interactiva de JavaScript 2025 — Objetos
+                </h1>
+                <p class="mt-3 text-lg text-blue-100 max-w-3xl">Todo sobre <span class="font-semibold">objetos en JavaScript</span>: desde la creación básica hasta métodos avanzados, arrays de objetos, desestructuración y <span class="font-semibold">prototype</span>.</p>
+                <div class="mt-4 space-x-2">
+                    <span class="chip"><i class="fa-solid fa-graduation-cap mr-1"></i>Básico a Avanzado</span>
+                    <span class="chip"><i class="fa-solid fa-laptop-code mr-1"></i>JavaScript</span>
+                    <span class="chip"><i class="fa-solid fa-hand-pointer mr-1"></i>Interactivo</span>
+                </div>
+            </div>
+            <nav aria-label="Contenido" class="bg-white/10 backdrop-filter backdrop-blur rounded-2xl p-4 w-full lg:w-[28rem] shadow-lg">
+                <h2 class="font-semibold mb-2"><i class="fa-solid fa-list-check mr-2"></i>Índice</h2>
+                <ol class="grid grid-cols-1 gap-2 text-sm">
+                    <li><a href="#intro" class="hover:underline">0. Introducción</a></li>
+                    <li><a href="#que-es" class="hover:underline">1. ¿Qué es un objeto?</a></li>
+                    <li><a href="#crear" class="hover:underline">2. Crear objetos</a></li>
+                    <li><a href="#agregar-valores" class="hover:underline">3. Agregar valores</a></li>
+                    <li><a href="#tamano" class="hover:underline">4. Medir tamaño</a></li>
+                    <li><a href="#fusionar" class="hover:underline">5. Fusionar objetos</a></li>
+                    <li><a href="#metodos" class="hover:underline">6. Métodos en objetos</a></li>
+                    <li><a href="#tipo-programacion" class="hover:underline">7. Tipo de programación</a></li>
+                    <li><a href="#arrays-objetos" class="hover:underline">8. Arrays de objetos</a></li>
+                    <li><a href="#filter-map-sort" class="hover:underline">9. filter, map, sort, every</a></li>
+                    <li><a href="#find" class="hover:underline">10. find con objetos</a></li>
+                    <li><a href="#desestructuracion" class="hover:underline">11. Desestructuración</a></li>
+                    <li><a href="#prototype" class="hover:underline">12. Prototype</a></li>
+                    <li><a href="#retos" class="hover:underline font-semibold">Retos</a></li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<main class="container mx-auto px-6 py-10">
+    <!-- Intro -->
+    <section id="intro" class="mb-10 section card-gradient rounded-xl shadow anchor">
+        <div class="p-6">
+            <h2 class="text-2xl font-semibold section-title"><i class="fa-solid fa-lightbulb mr-2"></i> ¿Por qué aprender sobre objetos?</h2>
+            <p class="mt-2 text-gray-700">Los <span class="key-term">objetos</span> son una de las estructuras más importantes en JavaScript. Permiten organizar datos de manera estructurada y representar entidades del mundo real. Conocerlos bien es fundamental para desarrollar aplicaciones modernas.</p>
+        </div>
+    </section>
+
+    <!-- 1. ¿Qué es un objeto? -->
+    <section id="que-es" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-question mr-2"></i> 1) ¿Qué es un objeto?</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p>Un <span class="key-term">objeto</span> en JavaScript es una colección de propiedades, donde cada propiedad es una asociación entre un nombre (clave) y un valor. Los objetos pueden contener cualquier tipo de dato: números, strings, arrays, funciones e incluso otros objetos.</p>
+            <div class="code-wrap mt-4">
+                <div class="code-toolbar">
+                    <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                    <button class="btn play-btn" data-target="#out-que-es" data-run="runQueEs"><i class="fa-solid fa-play"></i> Simular</button>
+                </div>
+                <pre class="code"><code>// Ejemplo de objeto persona
+const persona = {
+  nombre: "Ana",
+  edad: 30,
+  profesion: "Desarrolladora",
+  direccion: {
+    ciudad: "Madrid",
+    pais: "España"
+  },
+  saludar: function() {
+    return `Hola, soy ${this.nombre}`;
+  }
+};
+
+console.log(persona.nombre); // "Ana"
+console.log(persona.saludar()); // "Hola, soy Ana"
+</code></pre>
+                <div class="output mt-2" id="out-que-es"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. Crear objetos -->
+    <section id="crear" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-plus mr-2"></i> 2) Crear objetos</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p>Existen varias formas de crear objetos en JavaScript:</p>
+            <ul class="list-disc pl-6 text-gray-700 mb-4">
+                <li><strong>Literal de objeto</strong>: La forma más común y sencilla</li>
+                <li><strong>Constructor Object</strong>: Usando <code>new Object()</code></li>
+                <li><strong>Función constructora</strong>: Para crear múltiples objetos similares</li>
+                <li><strong>Clases</strong>: Sintaxis moderna introducida en ES6</li>
+            </ul>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-crear1" data-run="runCrear1"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// 1. Literal de objeto
+const libro = {
+  titulo: "JavaScript Moderno",
+  autor: "Ana García",
+  paginas: 350,
+  disponible: true
+};
+
+console.log(libro.titulo);
+</code></pre>
+                    <div class="output mt-2" id="out-crear1"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-crear2" data-run="runCrear2"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// 2. Constructor Object
+const coche = new Object();
+coche.marca = "Toyota";
+coche.modelo = "Corolla";
+coche.año = 2022;
+
+console.log(coche.marca);
+</code></pre>
+                    <div class="output mt-2" id="out-crear2"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Agregar valores -->
+    <section id="agregar-valores" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-plus-circle mr-2"></i> 3) Agregar valores a objetos</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p>Podemos agregar propiedades a un objeto de varias formas:</p>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-agregar1" data-run="runAgregar1"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Agregar propiedades después de crear el objeto
+const producto = { nombre: "Laptop", precio: 999 };
+
+// Notación de punto
+producto.categoria = "Electrónicos";
+producto.stock = 15;
+
+// Notación de corchetes
+producto["marca"] = "Dell";
+producto["enOferta"] = true;
+
+console.log(producto);
+</code></pre>
+                    <div class="output mt-2" id="out-agregar1"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-agregar2" data-run="runAgregar2"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Agregar propiedades dinámicamente
+const usuario = { nombre: "Carlos" };
+const propiedad = "edad";
+const valor = 28;
+
+// Usando variable para el nombre de la propiedad
+usuario[propiedad] = valor;
+
+// Agregar múltiples propiedades con Object.assign
+Object.assign(usuario, {
+  email: "carlos@email.com",
+  activo: true
+});
+
+console.log(usuario);
+</code></pre>
+                    <div class="output mt-2" id="out-agregar2"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Medir tamaño -->
+    <section id="tamano" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-ruler mr-2"></i> 4) Medir el tamaño de un objeto</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p>JavaScript no tiene una propiedad directa para medir el tamaño de un objeto, pero podemos usar varias técnicas:</p>
+            <div class="code-wrap mt-4">
+                <div class="code-toolbar">
+                    <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                    <button class="btn play-btn" data-target="#out-tamano" data-run="runTamano"><i class="fa-solid fa-play"></i> Simular</button>
+                </div>
+                <pre class="code"><code>const persona = {
+  nombre: "María",
+  edad: 25,
+  profesion: "Diseñadora",
+  ciudad: "Barcelona"
+};
+
+// 1. Contar propiedades con Object.keys()
+const cantidadPropiedades = Object.keys(persona).length;
+console.log(`Cantidad de propiedades: ${cantidadPropiedades}`);
+
+// 2. Usar Object.values() para obtener los valores
+const valores = Object.values(persona);
+console.log("Valores:", valores);
+
+// 3. Usar Object.entries() para obtener pares clave-valor
+const entradas = Object.entries(persona);
+console.log("Entradas:", entradas);
+
+// 4. Función para calcular tamaño aproximado en bytes
+function calcularTamaño(obj) {
+  const str = JSON.stringify(obj);
+  return new Blob([str]).size;
+}
+
+console.log(`Tamaño aproximado: ${calcularTamaño(persona)} bytes`);
+</code></pre>
+                <div class="output mt-2" id="out-tamano"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Fusionar objetos -->
+    <section id="fusionar" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-object-group mr-2"></i> 5) Fusionar objetos con ... (spread operator)</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p>El operador de propagación (<code>...</code>) permite fusionar objetos de forma sencilla e inmutable:</p>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-fusionar1" data-run="runFusionar1"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Fusionar objetos con spread operator
+const infoBasica = {
+  nombre: "Laura",
+  edad: 32
+};
+
+const infoProfesional = {
+  profesion: "Ingeniera",
+  empresa: "TechCorp"
+};
+
+const infoContacto = {
+  email: "laura@email.com",
+  telefono: "123-456-789"
+};
+
+// Fusionar todos los objetos
+const perfilCompleto = {
+  ...infoBasica,
+  ...infoProfesional,
+  ...infoContacto
+};
+
+console.log(perfilCompleto);
+</code></pre>
+                    <div class="output mt-2" id="out-fusionar1"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-fusionar2" data-run="runFusionar2"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Propiedades con el mismo nombre se sobrescriben
+const configuracionBase = {
+  tema: "oscuro",
+  idioma: "es",
+  notificaciones: true
+};
+
+const configuracionUsuario = {
+  tema: "claro", // Sobrescribe "oscuro"
+  sonido: true
+};
+
+const configuracionFinal = {
+  ...configuracionBase,
+  ...configuracionUsuario
+};
+
+console.log(configuracionFinal);
+
+// También podemos usar Object.assign()
+const configAlternativa = Object.assign(
+  {},
+  configuracionBase,
+  configuracionUsuario
+);
+console.log("Con Object.assign:", configAlternativa);
+</code></pre>
+                    <div class="output mt-2" id="out-fusionar2"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Métodos en objetos -->
+    <section id="metodos" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-gears mr-2"></i> 6) Métodos en objetos</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p>Los <span class="key-term">métodos</span> son funciones que están asociadas a un objeto. Pueden acceder a las propiedades del objeto usando <code>this</code>.</p>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-metodos1" data-run="runMetodos1"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Objeto con métodos
+const cuentaBancaria = {
+  titular: "Juan Pérez",
+  saldo: 1000,
+
+  // Método para depositar
+  depositar: function(cantidad) {
+    this.saldo += cantidad;
+    return `Depositado: $${cantidad}. Nuevo saldo: $${this.saldo}`;
+  },
+
+  // Método para retirar
+  retirar: function(cantidad) {
+    if (cantidad <= this.saldo) {
+      this.saldo -= cantidad;
+      return `Retirado: $${cantidad}. Nuevo saldo: $${this.saldo}`;
+    } else {
+      return "Fondos insuficientes";
+    }
+  },
+
+  // Método para consultar saldo
+  consultarSaldo: function() {
+    return `Saldo actual: $${this.saldo}`;
+  }
+};
+
+console.log(cuentaBancaria.consultarSaldo());
+console.log(cuentaBancaria.depositar(500));
+console.log(cuentaBancaria.retirar(200));
+</code></pre>
+                    <div class="output mt-2" id="out-metodos1"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-metodos2" data-run="runMetodos2"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Métodos con sintaxis abreviada (ES6)
+const calculadora = {
+  historial: [],
+
+  // Sintaxis abreviada para métodos
+  sumar(a, b) {
+    const resultado = a + b;
+    this.historial.push(`${a} + ${b} = ${resultado}`);
+    return resultado;
+  },
+
+  restar(a, b) {
+    const resultado = a - b;
+    this.historial.push(`${a} - ${b} = ${resultado}`);
+    return resultado;
+  },
+
+  mostrarHistorial() {
+    return this.historial;
+  }
+};
+
+console.log(calculadora.sumar(5, 3));
+console.log(calculadora.restar(10, 4));
+console.log("Historial:", calculadora.mostrarHistorial());
+</code></pre>
+                    <div class="output mt-2" id="out-metodos2"></div>
+                </div>
+            </div>
+            <div class="mt-4 p-4 bg-blue-50 rounded-lg">
+                <h3 class="font-semibold text-blue-800 mb-2"><i class="fa-solid fa-circle-info mr-2"></i>¿Se usan métodos en objetos en JavaScript?</h3>
+                <p class="text-blue-700">¡Sí! Los métodos son fundamentales en la programación orientada a objetos en JavaScript. Permiten encapsular comportamiento relacionado con los datos del objeto, haciendo el código más organizado y reutilizable.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. Tipo de programación -->
+    <section id="tipo-programacion" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-code mr-2"></i> 7) ¿Qué tipo de programación es?</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p>JavaScript es un lenguaje <span class="key-term">multiparadigma</span> que soporta varios estilos de programación:</p>
+
+            <div class="grid md:grid-cols-2 gap-6 mt-4">
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-lg mb-2">Programación Orientada a Objetos (POO)</h3>
+                    <ul class="list-disc pl-5 text-gray-700">
+                        <li><strong>Encapsulación</strong>: Agrupar datos y comportamientos relacionados</li>
+                        <li><strong>Herencia</strong>: Crear nuevas clases basadas en clases existentes</li>
+                        <li><strong>Polimorfismo</strong>: Mismo método, diferentes implementaciones</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-lg mb-2">Programación Funcional (PF)</h3>
+                    <ul class="list-disc pl-5 text-gray-700">
+                        <li><strong>Funciones puras</strong>: Sin efectos secundarios</li>
+                        <li><strong>Inmutabilidad</strong>: No modificar datos existentes</li>
+                        <li><strong>Funciones de orden superior</strong>: Funciones que toman/retornan funciones</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="code-wrap mt-4">
+                <div class="code-toolbar">
+                    <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                    <button class="btn play-btn" data-target="#out-paradigma" data-run="runParadigma"><i class="fa-solid fa-play"></i> Simular</button>
+                </div>
+                <pre class="code"><code>// Ejemplo que combina POO y PF
+class Producto {
+  constructor(nombre, precio) {
+    this.nombre = nombre;
+    this.precio = precio;
+  }
+
+  // Método de instancia (POO)
+  aplicarDescuento(porcentaje) {
+    return this.precio * (1 - porcentaje / 100);
+  }
+}
+
+// Función pura (PF)
+const calcularImpuesto = (precio, tasa) => precio * (1 + tasa / 100);
+
+// Array de objetos
+const productos = [
+  new Producto("Laptop", 1000),
+  new Producto("Mouse", 25),
+  new Producto("Teclado", 75)
+];
+
+// Uso de métodos funcionales con objetos
+const productosConImpuesto = productos.map(producto => ({
+  ...producto,
+  precioConImpuesto: calcularImpuesto(producto.precio, 21)
+}));
+
+console.log(productosConImpuesto);
+</code></pre>
+                <div class="output mt-2" id="out-paradigma"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. Arrays de objetos -->
+    <section id="arrays-objetos" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-layer-group mr-2"></i> 8) Arrays de objetos</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p>Los arrays de objetos son muy comunes en JavaScript, especialmente cuando trabajamos con datos de APIs o bases de datos.</p>
+            <div class="code-wrap mt-4">
+                <div class="code-toolbar">
+                    <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                    <button class="btn play-btn" data-target="#out-arrays-objetos" data-run="runArraysObjetos"><i class="fa-solid fa-play"></i> Simular</button>
+                </div>
+                <pre class="code"><code>// Array de objetos (estudiantes)
+const estudiantes = [
+  { id: 1, nombre: "Ana", edad: 20, curso: "JavaScript", nota: 8.5 },
+  { id: 2, nombre: "Luis", edad: 22, curso: "Python", nota: 7.8 },
+  { id: 3, nombre: "Marta", edad: 19, curso: "JavaScript", nota: 9.2 },
+  { id: 4, nombre: "Carlos", edad: 21, curso: "React", nota: 8.0 },
+  { id: 5, nombre: "Elena", edad: 23, curso: "JavaScript", nota: 8.7 }
+];
+
+// Acceder a propiedades de objetos en un array
+console.log("Primer estudiante:", estudiantes[0].nombre);
+console.log("Nota del segundo:", estudiantes[1].nota);
+
+// Recorrer array de objetos
+console.log("--- Todos los estudiantes ---");
+estudiantes.forEach(estudiante => {
+  console.log(`${estudiante.nombre} (${estudiante.curso}): ${estudiante.nota}`);
+});
+
+// Filtrar por curso
+const estudiantesJS = estudiantes.filter(e => e.curso === "JavaScript");
+console.log("--- Estudiantes de JavaScript ---", estudiantesJS);
+</code></pre>
+                <div class="output mt-2" id="out-arrays-objetos"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. filter, map, sort, every -->
+    <section id="filter-map-sort" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-filter mr-2"></i> 9) filter, map, sort, every con objetos</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p>Los métodos de arrays son especialmente útiles cuando trabajamos con arrays de objetos:</p>
+
+            <div class="grid md:grid-cols-2 gap-6 mt-4">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-filter-obj" data-run="runFilterObj"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// FILTER: Filtrar objetos que cumplan condición
+const productos = [
+  { nombre: "Laptop", precio: 1000, categoria: "electrónica" },
+  { nombre: "Mouse", precio: 25, categoria: "electrónica" },
+  { nombre: "Libro", precio: 15, categoria: "educación" },
+  { nombre: "Silla", precio: 150, categoria: "muebles" }
+];
+
+const electronicos = productos.filter(p => p.categoria === "electrónica");
+console.log("Productos electrónicos:", electronicos);
+
+const baratos = productos.filter(p => p.precio < 100);
+console.log("Productos baratos:", baratos);
+</code></pre>
+                    <div class="output mt-2" id="out-filter-obj"></div>
+                </div>
+
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-map-obj" data-run="runMapObj"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// MAP: Transformar objetos
+const productos = [
+  { nombre: "Laptop", precio: 1000 },
+  { nombre: "Mouse", precio: 25 },
+  { nombre: "Teclado", precio: 75 }
+];
+
+// Aplicar descuento del 10%
+const conDescuento = productos.map(p => ({
+  ...p,
+  precioDescuento: p.precio * 0.9
+}));
+
+console.log("Con descuento:", conDescuento);
+
+// Extraer solo nombres
+const nombres = productos.map(p => p.nombre);
+console.log("Nombres:", nombres);
+</code></pre>
+                    <div class="output mt-2" id="out-map-obj"></div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 mt-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-sort-obj" data-run="runSortObj"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// SORT: Ordenar objetos por propiedad
+const estudiantes = [
+  { nombre: "Ana", nota: 8.5 },
+  { nombre: "Luis", nota: 7.8 },
+  { nombre: "Marta", nota: 9.2 }
+];
+
+// Ordenar por nota (descendente)
+const porNota = [...estudiantes].sort((a, b) => b.nota - a.nota);
+console.log("Por nota:", porNota);
+
+// Ordenar por nombre (alfabético)
+const porNombre = [...estudiantes].sort((a, b) =>
+  a.nombre.localeCompare(b.nombre)
+);
+console.log("Por nombre:", porNombre);
+</code></pre>
+                    <div class="output mt-2" id="out-sort-obj"></div>
+                </div>
+
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-every-obj" data-run="runEveryObj"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// EVERY: Verificar si todos cumplen condición
+const pedidos = [
+  { id: 1, completado: true, total: 100 },
+  { id: 2, completado: true, total: 150 },
+  { id: 3, completado: true, total: 75 }
+];
+
+// ¿Todos los pedidos están completados?
+const todosCompletados = pedidos.every(p => p.completado);
+console.log("¿Todos completados?", todosCompletados);
+
+// ¿Todos los pedidos superan $50?
+const todosMayores50 = pedidos.every(p => p.total > 50);
+console.log("¿Todos > $50?", todosMayores50);
+
+// Agregar un pedido no completado
+pedidos.push({ id: 4, completado: false, total: 200 });
+console.log("¿Todos completados ahora?", pedidos.every(p => p.completado));
+</code></pre>
+                    <div class="output mt-2" id="out-every-obj"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. Find con objetos -->
+    <section id="find" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-magnifying-glass mr-2"></i> 10) find con objetos</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p>El método <code>find</code> es útil para buscar un objeto específico en un array:</p>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-find-obj" data-run="runFindObj"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// FIND: Buscar objeto por propiedad
+const usuarios = [
+  { id: 1, nombre: "Ana", email: "ana@email.com", activo: true },
+  { id: 2, nombre: "Luis", email: "luis@email.com", activo: false },
+  { id: 3, nombre: "Marta", email: "marta@email.com", activo: true },
+  { id: 4, nombre: "Carlos", email: "carlos@email.com", activo: true }
+];
+
+// Buscar usuario por ID
+const usuarioId2 = usuarios.find(u => u.id === 2);
+console.log("Usuario con ID 2:", usuarioId2);
+
+// Buscar usuario por email
+const usuarioEmail = usuarios.find(u => u.email === "marta@email.com");
+console.log("Usuario con email marta@...:", usuarioEmail);
+
+// Buscar primer usuario activo
+const primerActivo = usuarios.find(u => u.activo);
+console.log("Primer usuario activo:", primerActivo);
+</code></pre>
+                    <div class="output mt-2" id="out-find-obj"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-find-index" data-run="runFindIndex"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// FINDINDEX: Encontrar índice de objeto
+const productos = [
+  { id: 1, nombre: "Laptop", stock: 5 },
+  { id: 2, nombre: "Mouse", stock: 0 },
+  { id: 3, nombre: "Teclado", stock: 10 },
+  { id: 4, nombre: "Monitor", stock: 0 }
+];
+
+// Encontrar índice del primer producto sin stock
+const indiceSinStock = productos.findIndex(p => p.stock === 0);
+console.log("Índice primer producto sin stock:", indiceSinStock);
+
+if (indiceSinStock !== -1) {
+  console.log("Producto sin stock:", productos[indiceSinStock].nombre);
+}
+
+// FINDLAST y FINDLASTINDEX (ES2023)
+const ultimoSinStock = productos.findLast(p => p.stock === 0);
+console.log("Último producto sin stock:", ultimoSinStock);
+
+const ultimoIndiceSinStock = productos.findLastIndex(p => p.stock === 0);
+console.log("Índice último producto sin stock:", ultimoIndiceSinStock);
+</code></pre>
+                    <div class="output mt-2" id="out-find-index"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 11. Desestructuración -->
+    <section id="desestructuracion" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-box-open mr-2"></i> 11) Desestructuración de objetos</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p>La <span class="key-term">desestructuración</span> permite extraer propiedades de objetos de forma concisa:</p>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-dest1" data-run="runDest1"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Desestructuración básica
+const persona = {
+  nombre: "Ana",
+  edad: 30,
+  profesion: "Desarrolladora",
+  ciudad: "Madrid"
+};
+
+// Extraer propiedades
+const { nombre, edad } = persona;
+console.log(nombre, edad); // "Ana" 30
+
+// Con alias
+const { nombre: nombreCompleto, ciudad: lugar } = persona;
+console.log(nombreCompleto, lugar); // "Ana" "Madrid"
+
+// Valores por defecto
+const { pais = "España" } = persona;
+console.log(pais); // "España" (valor por defecto)
+</code></pre>
+                    <div class="output mt-2" id="out-dest1"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-dest2" data-run="runDest2"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Desestructuración en parámetros de función
+function mostrarInfo({ nombre, edad, profesion = "Desconocida" }) {
+  console.log(`${nombre}, ${edad} años, ${profesion}`);
+}
+
+const usuario = { nombre: "Carlos", edad: 25 };
+mostrarInfo(usuario);
+
+// Desestructuración anidada
+const empresa = {
+  nombre: "TechCorp",
+  direccion: {
+    calle: "Av. Principal",
+    ciudad: "Barcelona",
+    pais: "España"
+  },
+  empleados: 100
+};
+
+const {
+  nombre: nombreEmpresa,
+  direccion: { ciudad, pais }
+} = empresa;
+
+console.log(`${nombreEmpresa} está en ${ciudad}, ${pais}`);
+
+// Rest operator en desestructuración
+const { nombre: nom, ...resto } = persona;
+console.log("Nombre:", nom);
+console.log("Resto:", resto);
+</code></pre>
+                    <div class="output mt-2" id="out-dest2"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 12. Prototype -->
+    <section id="prototype" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-diagram-project mr-2"></i> 12) Prototype en JavaScript</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p>JavaScript es un lenguaje basado en <span class="key-term">prototipos</span>. Cada objeto tiene una referencia interna a otro objeto llamado su prototipo.</p>
+
+            <div class="bg-blue-50 p-4 rounded-lg mb-4">
+                <h3 class="font-semibold text-blue-800 mb-2"><i class="fa-solid fa-lightbulb mr-2"></i>Cadena de prototipos (Prototype Chain)</h3>
+                <p class="text-blue-700">Cuando intentas acceder a una propiedad de un objeto, JavaScript busca primero en el objeto mismo. Si no la encuentra, busca en su prototipo, luego en el prototipo del prototipo, y así sucesivamente hasta encontrar la propiedad o llegar al final de la cadena (null).</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-prototype1" data-run="runPrototype1"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Prototipos básicos
+const animal = {
+  tipo: "Animal",
+  hacerSonido() {
+    return "Sonido genérico";
+  }
+};
+
+// Crear objeto con animal como prototipo
+const perro = Object.create(animal);
+perro.raza = "Labrador";
+perro.hacerSonido = function() {
+  return "¡Guau!";
+};
+
+console.log(perro.raza); // "Labrador" (propiedad propia)
+console.log(perro.hacerSonido()); // "¡Guau!" (propiedad propia)
+console.log(perro.tipo); // "Animal" (del prototipo)
+
+// Verificar relaciones
+console.log("animal es prototipo de perro?", animal.isPrototypeOf(perro));
+console.log("Prototipo de perro:", Object.getPrototypeOf(perro));
+</code></pre>
+                    <div class="output mt-2" id="out-prototype1"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-prototype2" data-run="runPrototype2"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Función constructora y prototype
+function Persona(nombre, edad) {
+  this.nombre = nombre;
+  this.edad = edad;
+}
+
+// Agregar método al prototipo
+Persona.prototype.saludar = function() {
+  return `Hola, soy ${this.nombre}`;
+};
+
+// Agregar propiedad al prototipo
+Persona.prototype.especie = "Humano";
+
+// Crear instancias
+const ana = new Persona("Ana", 30);
+const luis = new Persona("Luis", 25);
+
+console.log(ana.saludar()); // "Hola, soy Ana"
+console.log(luis.saludar()); // "Hola, soy Luis"
+console.log(ana.especie); // "Humano" (del prototipo)
+
+// Todas las instancias comparten el mismo prototipo
+console.log("Mismo prototipo?",
+  Object.getPrototypeOf(ana) === Object.getPrototypeOf(luis));
+</code></pre>
+                    <div class="output mt-2" id="out-prototype2"></div>
+                </div>
+            </div>
+
+            <div class="code-wrap mt-6">
+                <div class="code-toolbar">
+                    <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                    <button class="btn play-btn" data-target="#out-prototype3" data-run="runPrototype3"><i class="fa-solid fa-play"></i> Simular</button>
+                </div>
+                <pre class="code"><code>// Herencia prototípica
+function Animal(nombre) {
+  this.nombre = nombre;
+}
+
+Animal.prototype.hacerSonido = function() {
+  return "Sonido genérico";
+};
+
+function Perro(nombre, raza) {
+  Animal.call(this, nombre); // Llamar al constructor padre
+  this.raza = raza;
+}
+
+// Establecer la herencia prototípica
+Perro.prototype = Object.create(Animal.prototype);
+Perro.prototype.constructor = Perro;
+
+// Sobrescribir método
+Perro.prototype.hacerSonido = function() {
+  return "¡Guau!";
+};
+
+const miPerro = new Perro("Max", "Labrador");
+console.log(miPerro.nombre); // "Max"
+console.log(miPerro.hacerSonido()); // "¡Guau!"
+console.log("miPerro es instancia de Perro?", miPerro instanceof Perro);
+console.log("miPerro es instancia de Animal?", miPerro instanceof Animal);
+</code></pre>
+                <div class="output mt-2" id="out-prototype3"></div>
+            </div>
+
+            <div class="mt-4 p-4 bg-purple-50 rounded-lg">
+                <h3 class="font-semibold text-purple-800 mb-2"><i class="fa-solid fa-warning mr-2"></i>Nota sobre clases en ES6</h3>
+                <p class="text-purple-700">Las clases introducidas en ES6 son principalmente "azúcar sintáctico" sobre el sistema de prototipos existente. Detrás de escena, las clases siguen utilizando prototipos para la herencia.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Retos -->
+    <section id="retos" class="mb-16 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-trophy mr-2"></i> Retos sugeridos</h2>
+        <div class="p-6 bg-white rounded-xl shadow grid md:grid-cols-3 gap-4 text-sm">
+            <div class="bg-white rounded-lg p-4 shadow">
+                <p class="font-semibold mb-1">Sistema de gestión de productos</p>
+                <p>Crea un objeto que gestione un inventario de productos con métodos para agregar, eliminar, buscar y calcular el valor total.</p>
+            </div>
+            <div class="bg-white rounded-lg p-4 shadow">
+                <p class="font-semibold mb-1">Simulador de carrito de compras</p>
+                <p>Implementa un carrito que pueda agregar productos, aplicar descuentos, calcular totales y mostrar un resumen de la compra.</p>
+            </div>
+            <div class="bg-white rounded-lg p-4 shadow">
+                <p class="font-semibold mb-1">Herencia con prototipos</p>
+                <p>Crea una jerarquía de objetos (Persona → Empleado → Gerente) utilizando herencia prototípica con métodos específicos para cada nivel.</p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="bg-gray-900 text-gray-200">
+    <div class="container mx-auto px-6 py-10 text-center">
+        <p class="text-lg font-semibold">&copy; 2025 Guía Interactiva — Objetos en JavaScript</p>
+        <p class="text-sm text-gray-400 mt-1">Hecho con 💙 y JS moderno.</p>
+        <div class="mt-3 flex justify-center space-x-4 text-xl">
+            <a class="hover:text-white" href="#que-es" title="Qué es un objeto"><i class="fa-solid fa-cube"></i></a>
+            <a class="hover:text-white" href="#metodos" title="Métodos"><i class="fa-solid fa-gears"></i></a>
+            <a class="hover:text-white" href="#prototype" title="Prototype"><i class="fa-solid fa-diagram-project"></i></a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // ======== Copiar código ========
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.copy-btn')) {
+            const wrap = e.target.closest('.code-wrap');
+            const code = wrap.querySelector('pre.code code') || wrap.querySelector('pre code');
+            if (!code) return;
+            navigator.clipboard.writeText(code.innerText);
+            const btn = e.target.closest('.copy-btn');
+            const original = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> Copiado';
+            setTimeout(()=> btn.innerHTML = original, 1500);
+        }
+    });
+
+    // ======== Salida animada ========
+    function writeOut(sel, lines){
+        const out = document.querySelector(sel); if(!out) return;
+        out.textContent = ''; let i = 0;
+        const tick = () => { if (i < lines.length) { out.textContent += (i? '\n' : '') + lines[i]; i++; setTimeout(tick, 90);} };
+        tick();
+    }
+
+    // ======== Runners ========
+    const runners = {
+        runQueEs(){
+            const persona = {
+                nombre: "Ana",
+                edad: 30,
+                profesion: "Desarrolladora",
+                direccion: {
+                    ciudad: "Madrid",
+                    pais: "España"
+                },
+                saludar: function() {
+                    return `Hola, soy ${this.nombre}`;
+                }
+            };
+            writeOut('#out-que-es', [
+                persona.nombre,
+                persona.saludar()
+            ]);
+        },
+
+        runCrear1(){
+            const libro = {
+                titulo: "JavaScript Moderno",
+                autor: "Ana García",
+                paginas: 350,
+                disponible: true
+            };
+            writeOut('#out-crear1', [libro.titulo]);
+        },
+
+        runCrear2(){
+            const coche = new Object();
+            coche.marca = "Toyota";
+            coche.modelo = "Corolla";
+            coche.año = 2022;
+            writeOut('#out-crear2', [coche.marca]);
+        },
+
+        runAgregar1(){
+            const producto = { nombre: "Laptop", precio: 999 };
+            producto.categoria = "Electrónicos";
+            producto.stock = 15;
+            producto["marca"] = "Dell";
+            producto["enOferta"] = true;
+            writeOut('#out-agregar1', [JSON.stringify(producto, null, 2)]);
+        },
+
+        runAgregar2(){
+            const usuario = { nombre: "Carlos" };
+            const propiedad = "edad";
+            const valor = 28;
+            usuario[propiedad] = valor;
+            Object.assign(usuario, {
+                email: "carlos@email.com",
+                activo: true
+            });
+            writeOut('#out-agregar2', [JSON.stringify(usuario, null, 2)]);
+        },
+
+        runTamano(){
+            const persona = {
+                nombre: "María",
+                edad: 25,
+                profesion: "Diseñadora",
+                ciudad: "Barcelona"
+            };
+            const cantidadPropiedades = Object.keys(persona).length;
+            const valores = Object.values(persona);
+            const entradas = Object.entries(persona);
+
+            function calcularTamaño(obj) {
+                const str = JSON.stringify(obj);
+                return new Blob([str]).size;
+            }
+
+            writeOut('#out-tamano', [
+                `Cantidad de propiedades: ${cantidadPropiedades}`,
+                `Valores: ${JSON.stringify(valores)}`,
+                `Entradas: ${JSON.stringify(entradas)}`,
+                `Tamaño aproximado: ${calcularTamaño(persona)} bytes`
+            ]);
+        },
+
+        runFusionar1(){
+            const infoBasica = { nombre: "Laura", edad: 32 };
+            const infoProfesional = { profesion: "Ingeniera", empresa: "TechCorp" };
+            const infoContacto = { email: "laura@email.com", telefono: "123-456-789" };
+
+            const perfilCompleto = { ...infoBasica, ...infoProfesional, ...infoContacto };
+            writeOut('#out-fusionar1', [JSON.stringify(perfilCompleto, null, 2)]);
+        },
+
+        runFusionar2(){
+            const configuracionBase = { tema: "oscuro", idioma: "es", notificaciones: true };
+            const configuracionUsuario = { tema: "claro", sonido: true };
+
+            const configuracionFinal = { ...configuracionBase, ...configuracionUsuario };
+            const configAlternativa = Object.assign({}, configuracionBase, configuracionUsuario);
+
+            writeOut('#out-fusionar2', [
+                JSON.stringify(configuracionFinal, null, 2),
+                `Con Object.assign: ${JSON.stringify(configAlternativa, null, 2)}`
+            ]);
+        },
+
+        runMetodos1(){
+            const cuentaBancaria = {
+                titular: "Juan Pérez",
+                saldo: 1000,
+                depositar: function(cantidad) {
+                    this.saldo += cantidad;
+                    return `Depositado: $${cantidad}. Nuevo saldo: $${this.saldo}`;
+                },
+                retirar: function(cantidad) {
+                    if (cantidad <= this.saldo) {
+                        this.saldo -= cantidad;
+                        return `Retirado: $${cantidad}. Nuevo saldo: $${this.saldo}`;
+                    } else {
+                        return "Fondos insuficientes";
+                    }
+                },
+                consultarSaldo: function() {
+                    return `Saldo actual: $${this.saldo}`;
+                }
+            };
+
+            writeOut('#out-metodos1', [
+                cuentaBancaria.consultarSaldo(),
+                cuentaBancaria.depositar(500),
+                cuentaBancaria.retirar(200)
+            ]);
+        },
+
+        runMetodos2(){
+            const calculadora = {
+                historial: [],
+                sumar(a, b) {
+                    const resultado = a + b;
+                    this.historial.push(`${a} + ${b} = ${resultado}`);
+                    return resultado;
+                },
+                restar(a, b) {
+                    const resultado = a - b;
+                    this.historial.push(`${a} - ${b} = ${resultado}`);
+                    return resultado;
+                },
+                mostrarHistorial() {
+                    return this.historial;
+                }
+            };
+
+            writeOut('#out-metodos2', [
+                calculadora.sumar(5, 3).toString(),
+                calculadora.restar(10, 4).toString(),
+                `Historial: ${JSON.stringify(calculadora.mostrarHistorial())}`
+            ]);
+        },
+
+        runParadigma(){
+            class Producto {
+                constructor(nombre, precio) {
+                    this.nombre = nombre;
+                    this.precio = precio;
+                }
+
+                aplicarDescuento(porcentaje) {
+                    return this.precio * (1 - porcentaje / 100);
+                }
+            }
+
+            const calcularImpuesto = (precio, tasa) => precio * (1 + tasa / 100);
+
+            const productos = [
+                new Producto("Laptop", 1000),
+                new Producto("Mouse", 25),
+                new Producto("Teclado", 75)
+            ];
+
+            const productosConImpuesto = productos.map(producto => ({
+                ...producto,
+                precioConImpuesto: calcularImpuesto(producto.precio, 21)
+            }));
+
+            writeOut('#out-paradigma', [JSON.stringify(productosConImpuesto, null, 2)]);
+        },
+
+        runArraysObjetos(){
+            const estudiantes = [
+                { id: 1, nombre: "Ana", edad: 20, curso: "JavaScript", nota: 8.5 },
+                { id: 2, nombre: "Luis", edad: 22, curso: "Python", nota: 7.8 },
+                { id: 3, nombre: "Marta", edad: 19, curso: "JavaScript", nota: 9.2 },
+                { id: 4, nombre: "Carlos", edad: 21, curso: "React", nota: 8.0 },
+                { id: 5, nombre: "Elena", edad: 23, curso: "JavaScript", nota: 8.7 }
+            ];
+
+            const estudiantesJS = estudiantes.filter(e => e.curso === "JavaScript");
+
+            writeOut('#out-arrays-objetos', [
+                `Primer estudiante: ${estudiantes[0].nombre}`,
+                `Nota del segundo: ${estudiantes[1].nota}`,
+                "--- Todos los estudiantes ---"
+            ].concat(
+                estudiantes.map(e => `${e.nombre} (${e.curso}): ${e.nota}`),
+                ["--- Estudiantes de JavaScript ---", JSON.stringify(estudiantesJS, null, 2)]
+            ));
+        },
+
+        runFilterObj(){
+            const productos = [
+                { nombre: "Laptop", precio: 1000, categoria: "electrónica" },
+                { nombre: "Mouse", precio: 25, categoria: "electrónica" },
+                { nombre: "Libro", precio: 15, categoria: "educación" },
+                { nombre: "Silla", precio: 150, categoria: "muebles" }
+            ];
+
+            const electronicos = productos.filter(p => p.categoria === "electrónica");
+            const baratos = productos.filter(p => p.precio < 100);
+
+            writeOut('#out-filter-obj', [
+                "Productos electrónicos: " + JSON.stringify(electronicos, null, 2),
+                "Productos baratos: " + JSON.stringify(baratos, null, 2)
+            ]);
+        },
+
+        runMapObj(){
+            const productos = [
+                { nombre: "Laptop", precio: 1000 },
+                { nombre: "Mouse", precio: 25 },
+                { nombre: "Teclado", precio: 75 }
+            ];
+
+            const conDescuento = productos.map(p => ({
+                ...p,
+                precioDescuento: p.precio * 0.9
+            }));
+
+            const nombres = productos.map(p => p.nombre);
+
+            writeOut('#out-map-obj', [
+                "Con descuento: " + JSON.stringify(conDescuento, null, 2),
+                "Nombres: " + JSON.stringify(nombres)
+            ]);
+        },
+
+        runSortObj(){
+            const estudiantes = [
+                { nombre: "Ana", nota: 8.5 },
+                { nombre: "Luis", nota: 7.8 },
+                { nombre: "Marta", nota: 9.2 }
+            ];
+
+            const porNota = [...estudiantes].sort((a, b) => b.nota - a.nota);
+            const porNombre = [...estudiantes].sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+            writeOut('#out-sort-obj', [
+                "Por nota: " + JSON.stringify(porNota, null, 2),
+                "Por nombre: " + JSON.stringify(porNombre, null, 2)
+            ]);
+        },
+
+        runEveryObj(){
+            const pedidos = [
+                { id: 1, completado: true, total: 100 },
+                { id: 2, completado: true, total: 150 },
+                { id: 3, completado: true, total: 75 }
+            ];
+
+            const todosCompletados = pedidos.every(p => p.completado);
+            const todosMayores50 = pedidos.every(p => p.total > 50);
+
+            pedidos.push({ id: 4, completado: false, total: 200 });
+            const todosCompletadosAhora = pedidos.every(p => p.completado);
+
+            writeOut('#out-every-obj', [
+                `¿Todos completados? ${todosCompletados}`,
+                `¿Todos > $50? ${todosMayores50}`,
+                `¿Todos completados ahora? ${todosCompletadosAhora}`
+            ]);
+        },
+
+        runFindObj(){
+            const usuarios = [
+                { id: 1, nombre: "Ana", email: "ana@email.com", activo: true },
+                { id: 2, nombre: "Luis", email: "luis@email.com", activo: false },
+                { id: 3, nombre: "Marta", email: "marta@email.com", activo: true },
+                { id: 4, nombre: "Carlos", email: "carlos@email.com", activo: true }
+            ];
+
+            const usuarioId2 = usuarios.find(u => u.id === 2);
+            const usuarioEmail = usuarios.find(u => u.email === "marta@email.com");
+            const primerActivo = usuarios.find(u => u.activo);
+
+            writeOut('#out-find-obj', [
+                "Usuario con ID 2: " + JSON.stringify(usuarioId2, null, 2),
+                "Usuario con email marta@...: " + JSON.stringify(usuarioEmail, null, 2),
+                "Primer usuario activo: " + JSON.stringify(primerActivo, null, 2)
+            ]);
+        },
+
+        runFindIndex(){
+            const productos = [
+                { id: 1, nombre: "Laptop", stock: 5 },
+                { id: 2, nombre: "Mouse", stock: 0 },
+                { id: 3, nombre: "Teclado", stock: 10 },
+                { id: 4, nombre: "Monitor", stock: 0 }
+            ];
+
+            const indiceSinStock = productos.findIndex(p => p.stock === 0);
+            let mensaje = "Índice primer producto sin stock: " + indiceSinStock;
+
+            if (indiceSinStock !== -1) {
+                mensaje += `\nProducto sin stock: ${productos[indiceSinStock].nombre}`;
+            }
+
+            // findLast y findLastIndex (simulados para compatibilidad)
+            const ultimoSinStock = productos.slice().reverse().find(p => p.stock === 0);
+            const ultimoIndiceSinStock = productos.length - 1 - productos.slice().reverse().findIndex(p => p.stock === 0);
+
+            writeOut('#out-find-index', [
+                mensaje,
+                "Último producto sin stock: " + JSON.stringify(ultimoSinStock, null, 2),
+                "Índice último producto sin stock: " + ultimoIndiceSinStock
+            ]);
+        },
+
+        runDest1(){
+            const persona = {
+                nombre: "Ana",
+                edad: 30,
+                profesion: "Desarrolladora",
+                ciudad: "Madrid"
+            };
+
+            const { nombre, edad } = persona;
+            const { nombre: nombreCompleto, ciudad: lugar } = persona;
+            const { pais = "España" } = persona;
+
+            writeOut('#out-dest1', [
+                `${nombre} ${edad}`,
+                `${nombreCompleto} ${lugar}`,
+                pais
+            ]);
+        },
+
+        runDest2(){
+            function mostrarInfo({ nombre, edad, profesion = "Desconocida" }) {
+                return `${nombre}, ${edad} años, ${profesion}`;
+            }
+
+            const usuario = { nombre: "Carlos", edad: 25 };
+
+            const empresa = {
+                nombre: "TechCorp",
+                direccion: {
+                    calle: "Av. Principal",
+                    ciudad: "Barcelona",
+                    pais: "España"
+                },
+                empleados: 100
+            };
+
+            const {
+                nombre: nombreEmpresa,
+                direccion: { ciudad, pais }
+            } = empresa;
+
+            const persona = {
+                nombre: "Ana",
+                edad: 30,
+                profesion: "Desarrolladora",
+                ciudad: "Madrid"
+            };
+
+            const { nombre: nom, ...resto } = persona;
+
+            writeOut('#out-dest2', [
+                mostrarInfo(usuario),
+                `${nombreEmpresa} está en ${ciudad}, ${pais}`,
+                "Nombre: " + nom,
+                "Resto: " + JSON.stringify(resto, null, 2)
+            ]);
+        },
+
+        runPrototype1(){
+            const animal = {
+                tipo: "Animal",
+                hacerSonido() {
+                    return "Sonido genérico";
+                }
+            };
+
+            const perro = Object.create(animal);
+            perro.raza = "Labrador";
+            perro.hacerSonido = function() {
+                return "¡Guau!";
+            };
+
+            writeOut('#out-prototype1', [
+                perro.raza,
+                perro.hacerSonido(),
+                perro.tipo,
+                "animal es prototipo de perro? " + animal.isPrototypeOf(perro),
+                "Prototipo de perro: " + JSON.stringify(Object.getPrototypeOf(perro))
+            ]);
+        },
+
+        runPrototype2(){
+            function Persona(nombre, edad) {
+                this.nombre = nombre;
+                this.edad = edad;
+            }
+
+            Persona.prototype.saludar = function() {
+                return `Hola, soy ${this.nombre}`;
+            };
+
+            Persona.prototype.especie = "Humano";
+
+            const ana = new Persona("Ana", 30);
+            const luis = new Persona("Luis", 25);
+
+            writeOut('#out-prototype2', [
+                ana.saludar(),
+                luis.saludar(),
+                ana.especie,
+                "Mismo prototipo? " + (Object.getPrototypeOf(ana) === Object.getPrototypeOf(luis))
+            ]);
+        },
+
+        runPrototype3(){
+            function Animal(nombre) {
+                this.nombre = nombre;
+            }
+
+            Animal.prototype.hacerSonido = function() {
+                return "Sonido genérico";
+            };
+
+            function Perro(nombre, raza) {
+                Animal.call(this, nombre);
+                this.raza = raza;
+            }
+
+            Perro.prototype = Object.create(Animal.prototype);
+            Perro.prototype.constructor = Perro;
+
+            Perro.prototype.hacerSonido = function() {
+                return "¡Guau!";
+            };
+
+            const miPerro = new Perro("Max", "Labrador");
+
+            writeOut('#out-prototype3', [
+                miPerro.nombre,
+                miPerro.hacerSonido(),
+                "miPerro es instancia de Perro? " + (miPerro instanceof Perro),
+                "miPerro es instancia de Animal? " + (miPerro instanceof Animal)
+            ]);
+        }
+    };
+
+    document.addEventListener('click', (e)=>{
+        const play = e.target.closest('.play-btn');
+        if (play) {
+            const fn = play.getAttribute('data-run');
+            if (fn && typeof runners[fn] === 'function') runners[fn]();
+        }
+    });
+</script>
+</body>
+</html>
