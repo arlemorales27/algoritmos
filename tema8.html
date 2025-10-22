@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>POO y Clases en JavaScript — Tutorial</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        :root{--azul:#1D4ED8;--morado:#6B46C1;--azulClaro:#3B82F6}
+        html{scroll-behavior:smooth}
+        .section-title{color:var(--morado)}
+        .key-term{color:var(--azul);font-weight:700}
+        .container{max-width:1000px}
+        .card{background:#fff;border-radius:12px;padding:1rem;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+        .pre{background:#f6f8fa;padding:0.75rem;border-radius:8px;overflow:auto;font-family:ui-monospace,monospace}
+        .output{background:#0b1220;color:#D1E7FF;padding:.6rem;border-radius:.5rem;min-height:2rem;font-family:ui-monospace,monospace}
+        .btn{background:#fff;border:1px solid #e5e7eb;padding:.35rem .6rem;border-radius:.5rem;cursor:pointer}
+        .fade-in{animation:fadeIn .6s ease}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+        .icon-bounce{display:inline-block;animation:bounce 1.6s infinite}
+        @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+    </style>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800">
+<header class="bg-gradient-to-r from-blue-700 to-purple-700 text-white py-6 mb-6">
+    <div class="container mx-auto px-4 flex items-center justify-between">
+        <h1 class="text-xl font-semibold"><i class="fa-solid fa-chalkboard-teacher mr-2"></i> Clases en JavaScript</h1>
+        <nav>
+            <a class="mr-3" href="#1">1</a><a class="mr-3" href="#2">2</a><a class="mr-3" href="#3">3</a><a href="#8">8</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container mx-auto px-4 space-y-6">
+    <!-- 1 -->
+    <section id="1" class="card fade-in">
+        <h2 class="text-2xl font-semibold section-title"><i class="fa-solid fa-brain mr-2"></i> 1) ¿Qué es la programación orientada a objetos (POO)?</h2>
+        <p class="mt-2">La <span class="key-term">POO</span> es un paradigma que modela el software con objetos que combinan <em>estado</em> (atributos) y <em>comportamiento</em> (métodos). Favorece encapsulación, reutilización y diseño modular.</p>
+    </section>
+
+    <!-- 2 -->
+    <section id="2" class="card fade-in">
+        <h2 class="text-2xl font-semibold section-title"><i class="fa-solid fa-layer-group mr-2"></i> 2) ¿Qué es una clase en JavaScript?</h2>
+        <p>Una clase es una plantilla para crear objetos con propiedades y métodos. En JavaScript ES6 las clases son azúcar sintáctico sobre los prototipos.</p>
+
+        <div class="mt-4">
+            <div class="flex gap-2 mb-2">
+                <button class="btn copy-btn" data-target="code-clase"> <i class="fa-regular fa-copy"></i> Copiar</button>
+                <button class="btn run-btn" data-run="runClase"> <i class="fa-solid fa-play"></i> Ejecutar</button>
+            </div>
+            <pre id="code-clase" class="pre"><code>// Clase simple: Producto
+class Producto {
+  constructor(nombre, precio) {
+    this.nombre = nombre;
+    this.precio = precio;
+  }
+
+  informacion() {
+    return `${this.nombre} — $${this.precio}`;
+  }
+}</code></pre>
+            <div class="output mt-2" id="out-clase"></div>
+        </div>
+    </section>
+
+    <!-- 3 -->
+    <section id="3" class="card fade-in">
+        <h2 class="text-2xl font-semibold section-title"><i class="fa-solid fa-code-branch mr-2"></i> 3) ¿Por qué JavaScript tiene objetos aparte de clases?</h2>
+        <p>JavaScript es prototípico: los objetos pueden crearse sin clases usando literales, Object.create o funciones constructoras. Las clases ES6 solo ofrecen una forma más legible de trabajar con prototipos.</p>
+        <div class="text-sm text-gray-600 mt-2">Conceptos adicionales: prototipo, Object.create, funciones constructoras.</div>
+    </section>
+
+    <!-- 4 -->
+    <section id="4" class="card fade-in">
+        <h2 class="text-2xl font-semibold section-title"><i class="fa-solid fa-tag mr-2"></i> 4) ¿Qué es un atributo?</h2>
+        <p>Un atributo (o propiedad) es una pieza de estado dentro de la instancia: por ejemplo <code>this.nombre</code> o <code>this.precio</code>.</p>
+        <div class="mt-3">
+      <pre class="pre"><code>// Atributos públicos y privados (nueva sintaxis)
+class ProductoPrivado {
+  #stock = 10; // privado
+  constructor(nombre) {
+    this.nombre = nombre; // público
+  }
+}</code></pre>
+        </div>
+    </section>
+
+    <!-- 5 -->
+    <section id="5" class="card fade-in">
+        <h2 class="text-2xl font-semibold section-title"><i class="fa-solid fa-gears mr-2"></i> 5) ¿Qué es un método?</h2>
+        <p>Un método es una función asociada a la clase/instancia que define comportamiento. Puede acceder a atributos con <code>this</code>.</p>
+        <div class="mt-3">
+      <pre class="pre"><code>// Método de instancia y método estático
+class MathUtil {
+  static doble(x){ return x*2; } // estático: llamado desde la clase
+  sumar(a,b){ return a+b; }     // de instancia
+}</code></pre>
+        </div>
+    </section>
+
+    <!-- 6 instancia -->
+    <section id="6" class="card fade-in">
+        <h2 class="text-2xl font-semibold section-title"><i class="fa-solid fa-user-plus mr-2"></i> 6) ¿Cómo creo una instancia y qué es?</h2>
+        <p>Una instancia es un objeto creado desde una clase con <code>new</code>. Representa un ejemplar concreto de la plantilla.</p>
+
+        <div class="mt-3">
+            <div class="flex gap-2 mb-2">
+                <button class="btn copy-btn" data-target="code-instancia">Copiar</button>
+                <button class="btn run-btn" data-run="runInstancia">Ejecutar</button>
+            </div>
+            <pre id="code-instancia" class="pre"><code>// Crear instancias
+class Usuario {
+  constructor(nombre, edad){
+    this.nombre = nombre;
+    this.edad = edad;
+  }
+  saludar(){ return `Hola, soy ${this.nombre}`; }
+}
+
+const u1 = new Usuario('María', 28);
+console.log(u1.saludar());
+console.log(u1 instanceof Usuario);</code></pre>
+            <div class="output mt-2" id="out-instancia"></div>
+        </div>
+    </section>
+
+    <!-- 6bis visibilidad -->
+    <section id="visibilidad" class="card fade-in">
+        <h2 class="text-2xl font-semibold section-title"><i class="fa-solid fa-lock mr-2"></i> 6b) Tipos de visibilidad: públicos, privados, get y set</h2>
+        <p>Visibilidad controla acceso. JavaScript permite campos privados con <code>#</code>, y getters/setters para controlar lectura/escritura.</p>
+
+        <div class="mt-3">
+            <div class="flex gap-2 mb-2">
+                <button class="btn copy-btn" data-target="code-visibilidad">Copiar</button>
+                <button class="btn run-btn" data-run="runVisibilidad">Ejecutar</button>
+            </div>
+            <pre id="code-visibilidad" class="pre"><code>// Getters, setters y privado
+class Cuenta {
+  #saldo = 0;
+  constructor(titular){ this.titular = titular; }
+  get saldo(){ return this.#saldo; }
+  depositar(c){ if(c>0) this.#saldo += c; }
+  retirar(c){ if(c<=this.#saldo) this.#saldo -= c; else throw new Error('Fondos insuficientes'); }
+}</code></pre>
+            <div class="output mt-2" id="out-visibilidad"></div>
+        </div>
+    </section>
+
+    <!-- 7 herencia -->
+    <section id="7" class="card fade-in">
+        <h2 class="text-2xl font-semibold section-title"><i class="fa-solid fa-sitemap mr-2"></i> 7) ¿Qué es herencia?</h2>
+        <p>Herencia permite que una clase (subclase) reutilice y extienda comportamiento de otra (superclase) mediante <code>extends</code> y <code>super()</code>.</p>
+    </section>
+
+    <!-- 8 ejemplo herencia -->
+    <section id="8" class="card fade-in">
+        <h2 class="text-2xl font-semibold section-title"><i class="fa-solid fa-code-merge mr-2"></i> 8) Ejemplo de herencia en JavaScript</h2>
+
+        <div class="mt-3">
+            <div class="flex gap-2 mb-2">
+                <button class="btn copy-btn" data-target="code-herencia">Copiar</button>
+                <button class="btn run-btn" data-run="runHerencia">Ejecutar</button>
+            </div>
+            <pre id="code-herencia" class="pre"><code>// Herencia: Empleado -> Gerente
+class Empleado {
+  constructor(nombre, salario){
+    this.nombre = nombre;
+    this.salario = salario;
+  }
+  obtenerInfo(){ return `${this.nombre} — $${this.salario}`; }
+}
+
+class Gerente extends Empleado {
+  constructor(nombre, salario, depto){
+    super(nombre, salario);
+    this.depto = depto;
+  }
+  obtenerInfo(){
+    return `${super.obtenerInfo()} (${this.depto})`;
+  }
+}</code></pre>
+            <div class="output mt-2" id="out-herencia"></div>
+        </div>
+    </section>
+
+    <!-- Extras: composición y polimorfismo -->
+    <section id="extras" class="card fade-in">
+        <h2 class="text-2xl font-semibold section-title"><i class="fa-solid fa-calculator mr-2"></i> Otros conceptos POO en JS</h2>
+        <ul class="list-disc pl-6 mt-2">
+            <li><strong>Composición:</strong> un objeto contiene otros (ej. Auto tiene Motor).</li>
+            <li><strong>Polimorfismo:</strong> distintas clases comparten interfaz (método area en formas).</li>
+            <li><strong>Prototipos:</strong> las clases usan prototipos internamente.</li>
+        </ul>
+        <div class="mt-3">
+            <div class="flex gap-2 mb-2">
+                <button class="btn copy-btn" data-target="code-extras">Copiar</button>
+                <button class="btn run-btn" data-run="runExtras">Ejecutar</button>
+            </div>
+            <pre id="code-extras" class="pre"><code>// Polimorfismo y composición
+class Forma { area(){ return 0 } }
+class Circulo extends Forma { constructor(r){ super(); this.r = r } area(){ return Math.PI*this.r*this.r } }
+class Rectangulo extends Forma { constructor(b,h){ super(); this.b=b;this.h=h } area(){ return this.b*this.h } }
+
+class Motor{ arrancar(){ return 'Motor OK' } }
+class Auto{ constructor(){ this.motor = new Motor() } encender(){ return this.motor.arrancar() } }</code></pre>
+            <div class="output mt-2" id="out-extras"></div>
+        </div>
+    </section>
+
+    <footer class="text-sm text-gray-600 py-6 text-center">Tutorial compacto — ejemplos interactivos usando la consola simulada.</footer>
+</main>
+
+<script>
+    /* Funcionalidad de copiar y ejecutar */
+    document.querySelectorAll('.copy-btn').forEach(b => b.addEventListener('click', e=>{
+        const target = e.currentTarget.dataset.target;
+        const code = document.getElementById(target).innerText;
+        navigator.clipboard.writeText(code);
+        e.currentTarget.innerText = 'Copiado';
+        setTimeout(()=> e.currentTarget.innerText = 'Copiar',1200);
+    }));
+
+    function writeOut(id, lines){
+        const out = document.getElementById(id);
+        if(!out) return;
+        out.textContent = '';
+        let i=0;
+        const tick = ()=>{ if(i<lines.length){ out.textContent += (i? '\\n':'') + lines[i]; i++; setTimeout(tick,60) } }
+        tick();
+    }
+
+    /* Runners: ejecutar fragmentos seguros y mostrar resultado */
+    const runners = {
+        runClase(){
+            try{
+                class Producto {
+                    constructor(nombre, precio){ this.nombre=nombre; this.precio=precio }
+                    informacion(){ return `${this.nombre} — $${this.precio}` }
+                }
+                const p = new Producto('Libro', 29.99);
+                writeOut('out-clase',[p.informacion()]);
+            }catch(e){ writeOut('out-clase',[String(e)]) }
+        },
+
+        runInstancia(){
+            try{
+                class Usuario {
+                    constructor(nombre, edad){ this.nombre=nombre; this.edad=edad }
+                    saludar(){ return `Hola, soy ${this.nombre}` }
+                }
+                const u1 = new Usuario('María',28);
+                writeOut('out-instancia',[u1.saludar(), String(u1 instanceof Usuario)]);
+            }catch(e){ writeOut('out-instancia',[String(e)]) }
+        },
+
+        runVisibilidad(){
+            try{
+                class Cuenta {
+                    #saldo = 0;
+                    constructor(titular){ this.titular = titular }
+                    get saldo(){ return this.#saldo }
+                    depositar(c){ if(c>0) this.#saldo+=c }
+                    retirar(c){ if(c<=this.#saldo) this.#saldo-=c; else throw new Error('Fondos insuficientes') }
+                }
+                const c = new Cuenta('Ana');
+                writeOut('out-visibilidad',['Saldo inicial: '+c.saldo]);
+                c.depositar(150);
+                writeOut('out-visibilidad',['Saldo después de depositar: '+c.saldo]);
+                try{ c.retirar(200) }catch(err){ writeOut('out-visibilidad',['Error: '+err.message]) }
+            }catch(e){ writeOut('out-visibilidad',[String(e)]) }
+        },
+
+        runHerencia(){
+            try{
+                class Empleado {
+                    constructor(nombre,salario){ this.nombre=nombre; this.salario=salario }
+                    obtenerInfo(){ return `${this.nombre} — $${this.salario}` }
+                }
+                class Gerente extends Empleado {
+                    constructor(nombre,salario,depto){ super(nombre,salario); this.depto=depto }
+                    obtenerInfo(){ return `${super.obtenerInfo()} (${this.depto})` }
+                }
+                const g = new Gerente('Ana',5000,'Ventas');
+                writeOut('out-herencia',[g.obtenerInfo()]);
+            }catch(e){ writeOut('out-herencia',[String(e)]) }
+        },
+
+        runExtras(){
+            try{
+                class Forma{ area(){return 0} }
+                class Circulo extends Forma{ constructor(r){super();this.r=r} area(){return Math.PI*this.r*this.r} }
+                class Rectangulo extends Forma{ constructor(b,h){super();this.b=b;this.h=h} area(){return this.b*this.h} }
+                const f = [new Circulo(3), new Rectangulo(4,2)];
+                const areas = f.map(x=>x.area());
+                class Motor{ arrancar(){return 'Motor OK'} }
+                class Auto{ constructor(){this.motor=new Motor()} encender(){return this.motor.arrancar()} }
+                const auto = new Auto();
+                writeOut('out-extras',['Áreas: '+JSON.stringify(areas),'Auto: '+auto.encender()]);
+            }catch(e){ writeOut('out-extras',[String(e)]) }
+        }
+    };
+
+    /* Ejecutores vinculados a botones */
+    document.querySelectorAll('.run-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const run = btn.dataset.run;
+            if(run && typeof runners[run]==='function') runners[run]();
+        });
+    });
+
+    /* Ejecutar algunos demos al cargar */
+    document.addEventListener('DOMContentLoaded', ()=>{ runners.runClase(); runners.runInstancia(); });
+</script>
+</body>
+</html>
