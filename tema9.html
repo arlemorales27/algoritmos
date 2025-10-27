@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JS 2025: Asincronismo — Guía Interactiva</title>
+    <!-- Tailwind 2.x CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        :root{
+            --azul:#1D4ED8; /* Indigo-700 */
+            --morado:#6B46C1; /* Purple-700 */
+            --azulClaro:#3B82F6; /* Blue-500 */
+        }
+        html{scroll-behavior:smooth}
+        .key-term{color:var(--azul);font-weight:700}
+        .section-title{color:var(--morado)}
+        .section{border-left:4px solid var(--azulClaro);padding-left:1rem}
+        pre{background:#f6f8fa;padding:1rem;border-radius:12px;overflow-x:auto}
+        code{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+        .chip{background:rgba(59,130,246,.1);color:#1e40af;padding:.25rem .6rem;border-radius:9999px;font-size:.75rem}
+        .card-gradient{background:linear-gradient(135deg, rgba(29,78,216,.08), rgba(107,70,193,.06));}
+        .shine{position:relative;overflow:hidden}
+        .shine::after{content:"";position:absolute;top:-120%;left:-120%;width:240%;height:240%;background:linear-gradient(120deg, transparent 40%, rgba(255,255,255,.25), transparent 60%);transform:rotate(10deg);animation:shine 7s infinite}
+        @keyframes shine{0%{transform:translateX(-120%) rotate(10deg)}100%{transform:translateX(120%) rotate(10deg)}}
+        .anchor:before{content:"";display:block;height:80px;margin-top:-80px;visibility:hidden}
+        table{width:100%;border-collapse:collapse;margin:1rem 0}
+        th,td{border:1px solid #e5e7eb;padding:.75rem;text-align:left}
+        th{background-color:var(--azulClaro);color:#fff}
+        .code-wrap{position:relative}
+        .code-toolbar{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.5rem}
+        .btn{font-size:.8rem;border:1px solid #d1d5db;padding:.35rem .6rem;border-radius:.75rem;background:#fff;display:inline-flex;align-items:center;gap:.4rem}
+        .btn:hover{box-shadow:0 2px 10px rgba(0,0,0,.06)}
+        .btn[disabled]{opacity:.5;cursor:not-allowed}
+        .hl{background:rgba(59,130,246,.16);padding:.05rem .15rem;border-radius:.25rem;cursor:pointer}
+        .hl.active{outline:2px solid var(--azulClaro)}
+        .tooltip{position:absolute;z-index:20;background:#111827;color:#F9FAFB;padding:.5rem .65rem;border-radius:.5rem;font-size:.8rem;box-shadow:0 8px 30px rgba(0,0,0,.25);max-width:260px}
+        .tooltip::after{content:"";position:absolute;border:7px solid transparent;border-top-color:#111827;bottom:-14px;left:12px}
+        .output{background:#0b1220;color:#D1E7FF;border-radius:.75rem;padding:.75rem;min-height:2.25rem;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+        .step-focus{background:linear-gradient(90deg, rgba(59,130,246,.18), rgba(107,70,193,.18));border-radius:.35rem}
+        .badge{display:inline-flex;align-items:center;gap:.35rem;background:rgba(107,70,193,.12);color:#5b21b6;border:1px solid rgba(107,70,193,.25);padding:.2rem .5rem;border-radius:9999px;font-size:.72rem}
+        .badge i{font-size:.8rem}
+        @media(min-width:1024px){nav[aria-label="Contenido"]{position:sticky;top:1rem;height:fit-content}}
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+<header class="relative bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 text-white">
+    <div class="absolute inset-0 opacity-20 bg-center bg-cover" style="background-image:url('https://images.unsplash.com/photo-1557324232-b8917d3c3dcb?q=80&w=1600&auto=format&fit=crop');"></div>
+    <div class="container mx-auto px-6 py-14 relative">
+        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            <div>
+                <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight shine">
+                    <i class="fa-solid fa-bolt mr-3"></i> Guía Interactiva de JavaScript 2025 — Asincronismo
+                </h1>
+                <p class="mt-3 text-lg text-blue-100 max-w-3xl">Aprende paso a paso <span class="font-semibold">cómo funciona el asincronismo en JavaScript</span>: callbacks, <span class="font-semibold">promesas</span>, <span class="font-semibold">async/await</span>, manejo de <span class="font-semibold">excepciones</span> y consumo de APIs con ejemplos prácticos.</p>
+                <div class="mt-4 space-x-2">
+                    <span class="chip"><i class="fa-solid fa-graduation-cap mr-1"></i>Básico a Avanzado</span>
+                    <span class="chip"><i class="fa-solid fa-laptop-code mr-1"></i>JavaScript</span>
+                    <span class="chip"><i class="fa-solid fa-hand-pointer mr-1"></i>Interactivo</span>
+                </div>
+            </div>
+            <nav aria-label="Contenido" class="bg-white/10 backdrop-filter backdrop-blur rounded-2xl p-4 w-full lg:w-[28rem] shadow-lg">
+                <h2 class="font-semibold mb-2"><i class="fa-solid fa-list-check mr-2"></i>Índice</h2>
+                <ol class="grid grid-cols-1 gap-2 text-sm">
+                    <li><a href="#intro" class="hover:underline">0. Introducción</a></li>
+                    <li><a href="#que-es-async" class="hover:underline">1. ¿Qué es asincronismo?</a></li>
+                    <li><a href="#vida-cotidiana" class="hover:underline">2. Ejemplos en la vida cotidiana</a></li>
+                    <li><a href="#promesas" class="hover:underline">3. ¿Qué es una Promesa?</a></li>
+                    <li><a href="#ej-promesas" class="hover:underline">4. Tres ejemplos de promesas</a></li>
+                    <li><a href="#async-await" class="hover:underline">5. Async/Await en 2025</a></li>
+                    <li><a href="#helado" class="hover:underline">6. Caso práctico: hacer un helado 🍦</a></li>
+                    <li><a href="#excepciones" class="hover:underline">7. ¿Qué es una excepción? Manejo en JS</a></li>
+                    <li><a href="#api" class="hover:underline font-semibold">8. Consumo de una API básica</a></li>
+                    <li><a href="#glosario" class="hover:underline">Glosario</a></li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<main class="container mx-auto px-6 py-10">
+    <!-- Intro -->
+    <section id="intro" class="mb-10 section card-gradient rounded-xl shadow anchor">
+        <div class="p-6">
+            <h2 class="text-2xl font-semibold section-title"><i class="fa-solid fa-lightbulb mr-2"></i> ¿Por qué aprender asincronismo?</h2>
+            <p class="mt-2 text-gray-700">El <span class="key-term">asincronismo</span> permite que JavaScript <em>no se bloquee</em> mientras espera tareas lentas (I/O, red, temporizadores). Es la base de las apps modernas: chats en tiempo real, paneles con datos, sitios rápidos.</p>
+            <div class="mt-3 flex flex-wrap gap-2 text-sm">
+                <span class="badge"><i class="fa-solid fa-clock"></i> Event Loop</span>
+                <span class="badge"><i class="fa-solid fa-diagram-project"></i> Promesas</span>
+                <span class="badge"><i class="fa-solid fa-wand-magic-sparkles"></i> Async/Await</span>
+                <span class="badge"><i class="fa-solid fa-helmet-safety"></i> try/catch</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 1. ¿Qué es asincronismo? -->
+    <section id="que-es-async" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-question mr-2"></i> 1) ¿Qué es asincronismo?</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p>En JavaScript, el <span class="key-term">asincronismo</span> es la capacidad de <strong>iniciar una tarea</strong> y <strong>seguir ejecutando otras</strong> mientras la primera termina en segundo plano. JS usa un único <span class="key-term">hilo</span> y delega el trabajo lento a APIs del navegador o del entorno para luego reanudar con <span class="key-term">callbacks</span> en la <span class="key-term">cola de tareas</span>.</p>
+            <div class="code-wrap mt-4">
+                <div class="code-toolbar">
+                    <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                    <button class="btn play-btn" data-target="#out-que-es-async" data-run="runQueEsAsync"><i class="fa-solid fa-play"></i> Simular</button>
+                </div>
+                <pre class="code"><code>// Demostración: JS no se bloquea esperando setTimeout
+console.log("A");
+setTimeout(() => console.log("B (tarde)"), 500);
+console.log("C");
+// Orden esperado: A, C, B
+</code></pre>
+                <div class="output mt-2" id="out-que-es-async"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. Vida cotidiana -->
+    <section id="vida-cotidiana" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-person-walking mr-2"></i> 2) Ejemplos de asincronismo en la vida cotidiana</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <ol class="list-decimal pl-6 text-gray-700 space-y-2">
+                <li><strong>Pedir comida</strong>: haces el pedido (disparas tarea), sigues conversando (otras tareas), te llaman cuando llega (callback).</li>
+                <li><strong>Lavadora</strong>: inicias el ciclo y limpias la casa. Al terminar, suena (evento) y continúas con el siguiente paso.</li>
+                <li><strong>Semáforos</strong>: cada calle avanza cuando es su turno (cola de eventos).</li>
+            </ol>
+            <p class="mt-3 text-sm text-gray-600">Analogías útiles para entender <span class="key-term">event loop</span> y la <span class="key-term">cola de tareas</span>.</p>
+        </div>
+    </section>
+
+    <!-- 3. ¿Qué es una Promesa? -->
+    <section id="promesas" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-certificate mr-2"></i> 3) ¿Qué es una promesa?</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p>Una <span class="key-term">Promesa</span> representa el <strong>resultado futuro</strong> de una operación. Tiene tres estados: <span class="hl" data-def="pendiente: aún trabajando">pendiente</span>, <span class="hl" data-def="resuelta: éxito, se entrega el valor">resuelta</span> y <span class="hl" data-def="rechazada: ocurrió un error">rechazada</span>. Se consumen con <code>.then()</code>, <code>.catch()</code> y <code>.finally()</code>.</p>
+            <div class="grid md:grid-cols-2 gap-6 mt-4">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-promesa1" data-run="runPromesa1"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Crear una promesa básica
+const tarea = new Promise((resolve, reject) => {
+  setTimeout(() => resolve("Listo"), 400);
+});
+
+tarea
+ .then(v => "Éxito: " + v)
+ .then(msg => console.log(msg))
+ .catch(err => console.error(err))
+ .finally(() => console.log("Siempre se ejecuta"));
+</code></pre>
+                    <div class="output mt-2" id="out-promesa1"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-promesa2" data-run="runPromesa2"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Encadenamiento y manejo de errores
+const falla = (n) => new Promise((res, rej) => {
+  setTimeout(() => n % 2 ? res(n) : rej(new Error("Número par: falla")), 300);
+});
+
+falla(2)
+ .then(n => n * 2)
+ .catch(e => "Recuperado: " + e.message)
+ .then(msg => console.log(msg));
+</code></pre>
+                    <div class="output mt-2" id="out-promesa2"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Tres ejemplos de promesas -->
+    <section id="ej-promesas" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-list-ol mr-2"></i> 4) Tres ejemplos de promesas</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <span class="badge"><i class="fa-solid fa-wifi"></i> Red</span>
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-ej1" data-run="runEj1"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// 1) Simular petición de red
+const fetchFake = () => new Promise(res => {
+  setTimeout(() => res({status:200, data:{mensaje:"OK"}}), 500);
+});
+
+fetchFake().then(r => console.log(r.status, r.data.mensaje));
+</code></pre>
+                    <div class="output mt-2" id="out-ej1"></div>
+                </div>
+
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <span class="badge"><i class="fa-solid fa-stopwatch"></i> Tiempo</span>
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-ej2" data-run="runEj2"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// 2) Esperar un tiempo (sleep)
+const sleep = ms => new Promise(res => setTimeout(res, ms));
+
+sleep(300).then(() => console.log("Desperté"));
+</code></pre>
+                    <div class="output mt-2" id="out-ej2"></div>
+                </div>
+
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <span class="badge"><i class="fa-solid fa-layer-group"></i> Paralelo</span>
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-ej3" data-run="runEj3"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// 3) Ejecutar en paralelo
+const a = new Promise(r => setTimeout(()=>r("A"), 400));
+const b = new Promise(r => setTimeout(()=>r("B"), 200));
+
+Promise.all([a,b]).then(vals => console.log(vals.join("-"))); // "B" no bloquea a "A"
+</code></pre>
+                    <div class="output mt-2" id="out-ej3"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Async/Await -->
+    <section id="async-await" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-person-running mr-2"></i> 5) Async/Await en 2025: forma recomendada</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p><span class="key-term">async/await</span> es azúcar sintáctico sobre <span class="key-term">Promesas</span> que permite escribir código asíncrono con apariencia secuencial. En 2025, se recomienda:</p>
+            <ul class="list-disc pl-6 text-gray-700 mb-4">
+                <li><strong>Usar</strong> <code>await</code> para claridad y <code>Promise.all</code>/<code>allSettled</code> para paralelo.</li>
+                <li><strong>Encapsular</strong> en funciones <code>async</code> y manejar errores con <code>try/catch</code>.</li>
+                <li><strong>No bloquear</strong> la UI: preferir operaciones concurrentes cuando sea seguro.</li>
+            </ul>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-aa1" data-run="runAA1"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Secuencial con async/await
+const getValor = (v, ms) => new Promise(res => setTimeout(()=>res(v), ms));
+
+async function demoSecuencial(){
+  const x = await getValor(1, 300);
+  const y = await getValor(2, 300);
+  return x + y; // tarda ~600ms
+}
+
+demoSecuencial().then(console.log);
+</code></pre>
+                    <div class="output mt-2" id="out-aa1"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-aa2" data-run="runAA2"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// Paralelo correcto en 2025
+async function demoParalelo(){
+  const p1 = getValor(1, 300);
+  const p2 = getValor(2, 300);
+  const [x,y] = await Promise.all([p1,p2]); // ~300ms
+  return x + y;
+}
+
+demoParalelo().then(console.log);
+</code></pre>
+                    <div class="output mt-2" id="out-aa2"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Caso práctico: Helado -->
+    <section id="helado" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-ice-cream mr-2"></i> 6) Caso práctico: elaboración de un helado</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p>Haremos un helado modelando cada paso como una operación asíncrona. Mezcla (paralela), enfriar (secuencial) y servir.</p>
+            <div class="code-wrap">
+                <div class="code-toolbar">
+                    <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                    <button class="btn play-btn" data-target="#out-helado" data-run="runHelado"><i class="fa-solid fa-play"></i> Simular</button>
+                </div>
+                <pre class="code"><code>// Pasos del helado con async/await
+const paso = (nombre, ms, falla=false) => new Promise((res, rej) => {
+  setTimeout(() => falla ? rej(new Error(`Falla en ${nombre}`)) : res(`✔ ${nombre}`), ms);
+});
+
+async function hacerHelado(){
+  const [mezclarBase, mezclarSabor] = await Promise.all([
+    paso("Mezclar base", 300),
+    paso("Mezclar sabor", 300)
+  ]);
+
+  const enfriar = await paso("Enfriar mezcla", 400);
+  const servir = await paso("Servir bolas", 200);
+
+  return [mezclarBase, mezclarSabor, enfriar, servir];
+}
+
+hacerHelado()
+ .then(steps => steps.forEach(s => console.log(s)))
+ .catch(e => console.error("Error:", e.message));
+</code></pre>
+                <div class="output mt-2" id="out-helado"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. Excepciones -->
+    <section id="excepciones" class="mb-12 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-triangle-exclamation mr-2"></i> 7) ¿Qué es una excepción? Manejo en JavaScript</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p>Una <span class="key-term">excepción</span> es un <strong>evento de error</strong> que interrumpe el flujo normal. En JS moderno se maneja con <code>try</code>, <code>catch</code> y <code>finally</code>. En funciones <code>async</code>, los rechazos de promesas se capturan con <code>try/catch</code>.</p>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-ex1" data-run="runEx1"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// try/catch sincrónico
+try {
+  JSON.parse("{mal}");
+} catch (e) {
+  console.log("Capturado:", e.message);
+} finally {
+  console.log("Siempre se ejecuta");
+}
+</code></pre>
+                    <div class="output mt-2" id="out-ex1"></div>
+                </div>
+                <div class="code-wrap">
+                    <div class="code-toolbar">
+                        <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                        <button class="btn play-btn" data-target="#out-ex2" data-run="runEx2"><i class="fa-solid fa-play"></i> Simular</button>
+                    </div>
+                    <pre class="code"><code>// try/catch en async/await
+const aVecesFalla = () => new Promise((res, rej) =>
+  setTimeout(()=> Math.random()<0.5? res("ok") : rej(new Error("random fail")), 300)
+);
+
+async function robusto(){
+  try{
+    const r = await aVecesFalla();
+    return "Resultado: " + r;
+  }catch(e){
+    return "Manejé el error: " + e.message;
+  }finally{
+    console.log("Limpieza");
+  }
+}
+
+robusto().then(console.log);
+</code></pre>
+                    <div class="output mt-2" id="out-ex2"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. API básica -->
+    <section id="api" class="mb-16 section anchor">
+        <h2 class="text-3xl font-semibold mb-4 section-title"><i class="fa-solid fa-cloud-arrow-down mr-2"></i> 8) Consumo de una API básica y mostrar el asincronismo</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <p>Usaremos <code>fetch</code> para obtener datos públicos. Observa el estado de <span class="key-term">cargando</span> mientras la red responde.</p>
+            <div class="code-wrap">
+                <div class="code-toolbar">
+                    <button class="btn copy-btn"><i class="fa-regular fa-copy"></i> Copiar</button>
+                    <button class="btn play-btn" data-target="#out-api" data-run="runAPI"><i class="fa-solid fa-play"></i> Ejecutar</button>
+                    <button class="btn" id="btn-cancel" disabled><i class="fa-solid fa-ban"></i> Cancelar</button>
+                </div>
+                <pre class="code"><code>// Fetch con manejo de errores y cancelación
+async function cargarUsuario(signal){
+  const res = await fetch("https://jsonplaceholder.typicode.com/users/1", { signal });
+  if (!res.ok) throw new Error("HTTP " + res.status);
+  return res.json();
+}
+
+async function demoFetch(){
+  const ctrl = new AbortController();
+  document.querySelector('#btn-cancel').disabled = false;
+  document.querySelector('#btn-cancel').onclick = ()=> ctrl.abort();
+
+  try{
+    const usuario = await cargarUsuario(ctrl.signal);
+    return {nombre: usuario.name, email: usuario.email};
+  }catch(e){
+    return {error: e.name+": "+e.message};
+  }finally{
+    document.querySelector('#btn-cancel').disabled = true;
+  }
+}
+
+demoFetch().then(console.log);
+</code></pre>
+                <div class="output mt-2" id="out-api"></div>
+            </div>
+            <p class="text-sm text-gray-600 mt-2">Consejos 2025: usa <code>AbortController</code> para cancelar, valida <code>res.ok</code>, maneja errores con <code>try/catch</code>, y considera <code>Promise.allSettled</code> para lotes.</p>
+        </div>
+    </section>
+
+    <!-- Glosario -->
+    <section id="glosario" class="mb-10 section anchor">
+        <h2 class="text-2xl font-semibold section-title"><i class="fa-solid fa-book mr-2"></i> Glosario de palabras clave</h2>
+        <div class="p-6 bg-white rounded-xl shadow">
+            <div class="grid md:grid-cols-3 gap-4 text-sm">
+                <div class="bg-gray-50 p-4 rounded-lg"><span class="key-term">Event Loop</span>: mecanismo que coordina la ejecución de callbacks cuando las tareas asíncronas finalizan.</div>
+                <div class="bg-gray-50 p-4 rounded-lg"><span class="key-term">Callback</span>: función que se ejecuta cuando una tarea termina.</div>
+                <div class="bg-gray-50 p-4 rounded-lg"><span class="key-term">Promesa</span>: objeto que representa un valor futuro (resuelto o rechazado).</div>
+                <div class="bg-gray-50 p-4 rounded-lg"><span class="key-term">async/await</span>: sintaxis para escribir promesas de forma secuencial.</div>
+                <div class="bg-gray-50 p-4 rounded-lg"><span class="key-term">Concurrencia</span>: ejecutar múltiples tareas en progreso al mismo tiempo.</div>
+                <div class="bg-gray-50 p-4 rounded-lg"><span class="key-term">AbortController</span>: API para cancelar peticiones <code>fetch</code>.</div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="bg-gray-900 text-gray-200">
+    <div class="container mx-auto px-6 py-10 text-center">
+        <p class="text-lg font-semibold">&copy; 2025 Guía Interactiva — Asincronismo en JavaScript</p>
+        <p class="text-sm text-gray-400 mt-1">Hecho con 💙, Promesas y async/await.</p>
+        <div class="mt-3 flex justify-center space-x-4 text-xl">
+            <a class="hover:text-white" href="#que-es-async" title="¿Qué es asincronismo?"><i class="fa-solid fa-bolt"></i></a>
+            <a class="hover:text-white" href="#promesas" title="Promesas"><i class="fa-solid fa-certificate"></i></a>
+            <a class="hover:text-white" href="#api" title="API"><i class="fa-solid fa-cloud-arrow-down"></i></a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // ======== Copiar código ========
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.copy-btn')) {
+            const wrap = e.target.closest('.code-wrap');
+            const code = wrap.querySelector('pre.code code') || wrap.querySelector('pre code');
+            if (!code) return;
+            navigator.clipboard.writeText(code.innerText);
+            const btn = e.target.closest('.copy-btn');
+            const original = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> Copiado';
+            setTimeout(()=> btn.innerHTML = original, 1500);
+        }
+    });
+
+    // ======== Tooltips de términos ========
+    let tooltip;
+    document.addEventListener('mouseover', (e)=>{
+        const el = e.target.closest('.hl');
+        if(!el || !el.dataset.def) return;
+        tooltip = document.createElement('div');
+        tooltip.className = 'tooltip';
+        tooltip.textContent = el.dataset.def;
+        const r = el.getBoundingClientRect();
+        tooltip.style.top = (window.scrollY + r.bottom + 8) + 'px';
+        tooltip.style.left = (window.scrollX + r.left) + 'px';
+        document.body.appendChild(tooltip);
+    });
+    document.addEventListener('mouseout', (e)=>{
+        if(tooltip){ tooltip.remove(); tooltip=null; }
+    });
+
+    // ======== Salida animada ========
+    function writeOut(sel, lines){
+        const out = document.querySelector(sel); if(!out) return;
+        out.textContent = ''; let i = 0;
+        const tick = () => { if (i < lines.length) { out.textContent += (i? '\n' : '') + lines[i]; i++; setTimeout(tick, 80);} };
+        tick();
+    }
+
+    // ======== Runners de secciones ========
+    const runners = {
+        runQueEsAsync(){
+            console.log("A");
+            setTimeout(() => console.log("B (tarde)"), 500);
+            console.log("C");
+            writeOut('#out-que-es-async', ['A', 'C', 'B (tarde)']);
+        },
+        runPromesa1(){
+            const logs=[]; const push = (x)=>{logs.push(x); writeOut('#out-promesa1', logs)};
+            const tarea = new Promise((resolve) => setTimeout(() => resolve("Listo"), 400));
+            tarea
+                .then(v => "Éxito: " + v)
+                .then(msg => { push(msg); return msg; })
+                .catch(err => push(err.toString()))
+                .finally(() => push("Siempre se ejecuta"));
+        },
+        runPromesa2(){
+            const out = [];
+            const falla = (n) => new Promise((res, rej) => {
+                setTimeout(() => n % 2 ? res(n) : rej(new Error("Número par: falla")), 300);
+            });
+            falla(2)
+                .then(n => n * 2)
+                .catch(e => "Recuperado: " + e.message)
+                .then(msg => { out.push(msg); writeOut('#out-promesa2', out); });
+        },
+        runEj1(){
+            const fetchFake = () => new Promise(res => setTimeout(() => res({status:200, data:{mensaje:"OK"}}), 500));
+            fetchFake().then(r => writeOut('#out-ej1', ["status "+r.status+" "+r.data.mensaje]));
+        },
+        runEj2(){
+            const sleep = ms => new Promise(res => setTimeout(res, ms));
+            sleep(300).then(() => writeOut('#out-ej2', ["Desperté"]));
+        },
+        runEj3(){
+            const a = new Promise(r => setTimeout(()=>r("A"), 400));
+            const b = new Promise(r => setTimeout(()=>r("B"), 200));
+            Promise.all([a,b]).then(vals => writeOut('#out-ej3', [vals.join('-')]));
+        },
+        runAA1(){
+            const getValor = (v, ms) => new Promise(res => setTimeout(()=>res(v), ms));
+            async function demoSecuencial(){
+                const x = await getValor(1, 300);
+                const y = await getValor(2, 300);
+                return x + y;
+            }
+            demoSecuencial().then(n => writeOut('#out-aa1', [String(n)]));
+        },
+        runAA2(){
+            const getValor = (v, ms) => new Promise(res => setTimeout(()=>res(v), ms));
+            async function demoParalelo(){
+                const p1 = getValor(1, 300);
+                const p2 = getValor(2, 300);
+                const [x,y] = await Promise.all([p1,p2]);
+                return x + y;
+            }
+            demoParalelo().then(n => writeOut('#out-aa2', [String(n)]));
+        },
+        runHelado(){
+            const paso = (nombre, ms, falla=false) => new Promise((res, rej) => {
+                setTimeout(() => falla ? rej(new Error(`Falla en ${nombre}`)) : res(`✔ ${nombre}`), ms);
+            });
+            async function hacerHelado(){
+                const [mezclarBase, mezclarSabor] = await Promise.all([
+                    paso("Mezclar base", 300),
+                    paso("Mezclar sabor", 300)
+                ]);
+                const enfriar = await paso("Enfriar mezcla", 400);
+                const servir = await paso("Servir bolas", 200);
+                return [mezclarBase, mezclarSabor, enfriar, servir];
+            }
+            hacerHelado()
+                .then(steps => writeOut('#out-helado', steps))
+                .catch(e => writeOut('#out-helado', ["Error: "+e.message]));
+        },
+        runEx1(){
+            try {
+                JSON.parse("{mal}");
+            } catch (e) {
+                writeOut('#out-ex1', ["Capturado: "+e.message]);
+            } finally {
+                setTimeout(()=>{
+                    const el = document.querySelector('#out-ex1');
+                    el.textContent += "\nSiempre se ejecuta";
+                }, 80);
+            }
+        },
+        runEx2(){
+            const aVecesFalla = () => new Promise((res, rej) =>
+                setTimeout(()=> Math.random()<0.5? res("ok") : rej(new Error("random fail")), 300)
+            );
+            async function robusto(){
+                try{
+                    const r = await aVecesFalla();
+                    return "Resultado: " + r;
+                }catch(e){
+                    return "Manejé el error: " + e.message;
+                }finally{
+                    console.log("Limpieza");
+                }
+            }
+            robusto().then(msg => writeOut('#out-ex2', [msg]));
+        },
+        runAPI(){
+            (async function(){
+                const ctrl = new AbortController();
+                const outSel = '#out-api';
+                document.querySelector(outSel).textContent = 'Cargando...';
+                const btnCancel = document.querySelector('#btn-cancel');
+                btnCancel.disabled = false;
+                btnCancel.onclick = ()=> ctrl.abort();
+                try{
+                    const res = await fetch('https://jsonplaceholder.typicode.com/users/1', { signal: ctrl.signal });
+                    if(!res.ok) throw new Error('HTTP '+res.status);
+                    const u = await res.json();
+                    writeOut(outSel, ["Nombre: "+u.name, "Email: "+u.email]);
+                }catch(e){
+                    writeOut(outSel, ["Error: "+e.name+": "+e.message]);
+                }finally{
+                    btnCancel.disabled = true;
+                }
+            })();
+        }
+    };
+
+    document.addEventListener('click', (e)=>{
+        const play = e.target.closest('.play-btn');
+        if (play) {
+            const fn = play.getAttribute('data-run');
+            if (fn && typeof runners[fn] === 'function') runners[fn]();
+        }
+    });
+</script>
+</body>
+</html>
