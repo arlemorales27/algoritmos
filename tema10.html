@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>JS 2025 — DOM Paso a Paso (con header y footer)</title>
+
+    <!-- Tailwind 2.x -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <!-- Font Awesome (iconos) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+    <!-- Prism (tema claro + números de línea) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css"/>
+
+    <style>
+        :root{
+            --azul:#1D4ED8;      /* Indigo-700 */
+            --morado:#6B46C1;    /* Purple-700 */
+            --azulClaro:#3B82F6; /* Blue-500 */
+            --bg:#f8fafc;
+        }
+        html{scroll-behavior:smooth}
+        body{background:var(--bg)}
+        .section-title{color:var(--morado)}
+        .section{border-left:4px solid var(--azulClaro);padding-left:1rem}
+        .card-gradient{background:linear-gradient(135deg, rgba(29,78,216,.08), rgba(107,70,193,.06));}
+
+        /* ——— Estilos del header/hero como la página anterior ——— */
+        .shine{position:relative;overflow:hidden}
+        .shine::after{content:"";position:absolute;top:-120%;left:-120%;width:240%;height:240%;background:linear-gradient(120deg, transparent 40%, rgba(255,255,255,.25), transparent 60%);transform:rotate(10deg);animation:shine 7s infinite}
+        @keyframes shine{0%{transform:translateX(-120%) rotate(10deg)}100%{transform:translateX(120%) rotate(10deg)}}
+        .chip{background:rgba(59,130,246,.1);color:#1e40af;padding:.25rem .6rem;border-radius:9999px;font-size:.75rem}
+        .badge{display:inline-flex;align-items:center;gap:.35rem;background:rgba(107,70,193,.12);color:#5b21b6;border:1px solid rgba(107,70,193,.25);padding:.2rem .5rem;border-radius:9999px;font-size:.72rem}
+        .badge i{font-size:.8rem}
+        .anchor:before{content:"";display:block;height:80px;margin-top:-80px;visibility:hidden}
+        @media(min-width:1024px){nav[aria-label="Contenido"]{position:sticky;top:1rem;height:fit-content}}
+
+        /* ——— Utilidades del tutorial paso a paso ——— */
+        .icon-list{list-style:none;padding-left:0}
+        .icon-list li{display:flex;gap:.5rem;margin:.35rem 0}
+        .ico-bounce{animation:icoBounce 1.8s infinite}
+        @keyframes icoBounce{0%,20%,53%,80%,to{transform:translate3d(0,0,0)}40%,43%{transform:translate3d(0,-6px,0)}70%{transform:translate3d(0,-2px,0)}90%{transform:translate3d(0,-1px,0)}}
+        .profe{background:#eef2ff;border-left:4px solid var(--morado);border-radius:.5rem;padding:1rem}
+        .tabbar{display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:.5rem}
+        .tabbar .tab{font-size:.8rem;border:1px solid #d1d5db;padding:.35rem .6rem;border-radius:.75rem;background:#fff}
+        .tabbar .tab.active{border-color:var(--azulClaro);box-shadow:0 0 0 2px rgba(59,130,246,.15)}
+        .code-panel{display:none}
+        .code-panel.active{display:block}
+        pre[class*="language-"]{border-radius:12px}
+        .preview{width:100%;height:280px;border:1px solid #e5e7eb;border-radius:.75rem;background:#fff}
+        .btn{font-size:.85rem;border:1px solid #d1d5db;padding:.45rem .7rem;border-radius:.75rem;background:#fff;display:inline-flex;align-items:center;gap:.4rem}
+        .btn:hover{box-shadow:0 2px 10px rgba(0,0,0,.06)}
+        .focus-ring{outline:2px dashed var(--azulClaro); outline-offset:2px}
+    </style>
+</head>
+
+<body class="font-sans">
+
+<!-- ========================= HEADER (igual estilo que la página anterior) ========================= -->
+<header class="relative bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 text-white">
+    <div class="absolute inset-0 opacity-20 bg-center bg-cover"
+         style="background-image:url('https://images.unsplash.com/photo-1557324232-b8917d3c3dcb?q=80&w=1600&auto=format&fit=crop');"></div>
+
+    <div class="container mx-auto px-6 py-14 relative">
+        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            <!-- Columna izquierda: título, descripción, chips -->
+            <div>
+                <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight shine">
+                    <i class="fa-solid fa-bolt mr-3"></i> Guía Interactiva de JavaScript 2025 — DOM (Paso a paso)
+                </h1>
+                <p class="mt-3 text-lg text-blue-100 max-w-3xl">
+                    Aprende el <strong>DOM</strong> desde cero con demos: seleccionar, editar texto y estilos,
+                    crear/insertar nodos, eventos, <strong>delegación</strong>, <strong>&lt;template&gt; + DocumentFragment</strong> y un
+                    bonus con <strong>IntersectionObserver</strong>. Código separado en HTML/CSS/JS y ejecutable.
+                </p>
+                <div class="mt-4 space-x-2">
+                    <span class="chip"><i class="fa-solid fa-graduation-cap mr-1"></i>Básico a Intermedio</span>
+                    <span class="chip"><i class="fa-solid fa-laptop-code mr-1"></i>JavaScript</span>
+                    <span class="chip"><i class="fa-solid fa-hand-pointer mr-1"></i>Interactivo</span>
+                </div>
+            </div>
+
+            <!-- Columna derecha: Índice dentro del header (como la página anterior) -->
+            <nav aria-label="Contenido" class="bg-white/10 backdrop-filter backdrop-blur rounded-2xl p-4 w-full lg:w-[28rem] shadow-lg">
+                <h2 class="font-semibold mb-2"><i class="fa-solid fa-list-check mr-2"></i>Índice</h2>
+                <ol class="grid grid-cols-1 gap-2 text-sm">
+                    <li><a href="#p1" class="hover:underline">1. ¿Qué es el DOM?</a></li>
+                    <li><a href="#p2" class="hover:underline">2. Seleccionar elementos</a></li>
+                    <li><a href="#p3" class="hover:underline">3. Cambiar texto y estilos</a></li>
+                    <li><a href="#p4" class="hover:underline">4. Crear e insertar nodos</a></li>
+                    <li><a href="#p5" class="hover:underline">5. Eventos básicos</a></li>
+                    <li><a href="#p6" class="hover:underline">6. Delegación de eventos</a></li>
+                    <li><a href="#p7" class="hover:underline">7. Templates + Fragment</a></li>
+                    <li><a href="#bonus" class="hover:underline">Bonus. IntersectionObserver</a></li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<!-- ========================= CONTENIDO PRINCIPAL ========================= -->
+<main class="container mx-auto px-6 py-10 space-y-10">
+
+    <!-- ========== PASO 1 ========== -->
+    <section id="p1" class="section card-gradient rounded-xl shadow anchor">
+        <div class="p-6">
+            <h2 class="text-2xl font-semibold section-title"><i class="fa-solid fa-seedling mr-2"></i>Paso 1. ¿Qué es el DOM?</h2>
+            <div class="profe mt-3">
+                <p><strong>El profe:</strong> El <em>DOM</em> es una representación en árbol de tu HTML.
+                    Con JS podemos <em>leer</em> y <em>modificar</em> ese árbol. Cambiemos un saludo y un texto para verlo.</p>
+            </div>
+
+            <div class="mt-4 bg-white p-4 rounded-xl shadow demo" data-demo="p1" data-preview-height="220">
+                <div class="tabbar">
+                    <button class="tab active" data-tab="html">HTML</button>
+                    <button class="tab" data-tab="css">CSS</button>
+                    <button class="tab" data-tab="js">JavaScript</button>
+                </div>
+
+                <div class="code-panel active" data-panel="html">
+<pre class="line-numbers"><code class="language-html">&lt;main id="app"&gt;
+  &lt;h2 id="titulo"&gt;Saludo inicial&lt;/h2&gt;
+  &lt;p id="mensaje"&gt;Estoy esperando que JS me cambie.&lt;/p&gt;
+&lt;/main&gt;
+</code></pre>
+                </div>
+
+                <div class="code-panel" data-panel="css">
+<pre class="line-numbers"><code class="language-css">#app{ padding:16px; border:1px solid #e5e7eb; border-radius:12px; }
+.resaltado{ color:#1D4ED8; font-weight:700; }
+</code></pre>
+                </div>
+
+                <div class="code-panel" data-panel="js">
+<pre class="line-numbers"><code class="language-js">document.addEventListener('DOMContentLoaded', () =&gt; {
+  const titulo = document.getElementById('titulo');
+  const mensaje = document.getElementById('mensaje');
+
+  titulo.textContent = '¡Hola, DOM!';
+  titulo.classList.add('resaltado');
+  mensaje.textContent = 'El DOM es el árbol de tu página. JS puede leerlo y modificarlo.';
+});
+</code></pre>
+                </div>
+
+                <div class="flex gap-2 mt-3">
+                    <button class="btn run-demo"><i class="fa-solid fa-play"></i> Ejecutar demo</button>
+                    <button class="btn copy-bundle"><i class="fa-regular fa-copy"></i> Copiar HTML completo</button>
+                </div>
+                <div class="mt-3"><iframe class="preview" sandbox="allow-scripts"></iframe></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== PASO 2 ========== -->
+    <section id="p2" class="section rounded-xl shadow bg-white anchor">
+        <div class="p-6">
+            <h2 class="text-2xl font-semibold section-title"><i class="fa-solid fa-magnifying-glass mr-2"></i>Paso 2. Seleccionar elementos</h2>
+            <div class="profe mt-3">
+                <p><strong>El profe:</strong> Con <code>querySelector</code> y <code>querySelectorAll</code> (tipo CSS) encontramos elementos.
+                    Resaltemos los que son <code>.especial</code> y contemos cuántos hay.</p>
+            </div>
+
+            <div class="mt-4 bg-white p-4 rounded-xl shadow demo" data-demo="p2" data-preview-height="260">
+                <div class="tabbar">
+                    <button class="tab active" data-tab="html">HTML</button>
+                    <button class="tab" data-tab="css">CSS</button>
+                    <button class="tab" data-tab="js">JavaScript</button>
+                </div>
+
+                <div class="code-panel active" data-panel="html">
+<pre class="line-numbers"><code class="language-html">&lt;h3&gt;Frutas&lt;/h3&gt;
+&lt;ul id="frutas"&gt;
+  &lt;li class="item"&gt;Manzana&lt;/li&gt;
+  &lt;li class="item"&gt;Banana&lt;/li&gt;
+  &lt;li class="item"&gt;Uva&lt;/li&gt;
+  &lt;li class="item especial"&gt;Mango&lt;/li&gt;
+&lt;/ul&gt;
+&lt;button id="btn-resaltar"&gt;Resaltar especiales&lt;/button&gt;
+&lt;div id="cuenta"&gt;&lt;/div&gt;
+</code></pre>
+                </div>
+
+                <div class="code-panel" data-panel="css">
+<pre class="line-numbers"><code class="language-css">.item{ padding:.25rem .5rem; border-radius:.4rem; }
+.destacado{ background:#e0f2fe; outline:2px dashed #3B82F6; }
+</code></pre>
+                </div>
+
+                <div class="code-panel" data-panel="js">
+<pre class="line-numbers"><code class="language-js">document.addEventListener('DOMContentLoaded', () =&gt; {
+  const lista = document.querySelectorAll('#frutas .item');
+  const especiales = document.querySelectorAll('#frutas .especial');
+  const btn = document.getElementById('btn-resaltar');
+  const cuenta = document.getElementById('cuenta');
+
+  cuenta.textContent = 'Total de frutas: ' + lista.length;
+
+  btn.addEventListener('click', () =&gt; {
+    especiales.forEach(li =&gt; li.classList.toggle('destacado'));
+  });
+});
+</code></pre>
+                </div>
+
+                <div class="flex gap-2 mt-3">
+                    <button class="btn run-demo"><i class="fa-solid fa-play"></i> Ejecutar demo</button>
+                    <button class="btn copy-bundle"><i class="fa-regular fa-copy"></i> Copiar HTML completo</button>
+                </div>
+                <iframe class="preview mt-3" sandbox="allow-scripts"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== PASO 3 ========== -->
+    <section id="p3" class="section rounded-xl shadow bg-white anchor">
+        <div class="p-6">
+            <h2 class="text-2xl font-semibold section-title"><i class="fa-solid fa-highlighter mr-2"></i>Paso 3. Cambiar texto y estilos</h2>
+            <div class="profe mt-3">
+                <p><strong>El profe:</strong> <code>textContent</code> modifica texto. Para estilos, mejor usa <code>classList</code> (agrega o quita clases CSS).</p>
+            </div>
+
+            <div class="mt-4 bg-white p-4 rounded-xl shadow demo" data-demo="p3" data-preview-height="220">
+                <div class="tabbar">
+                    <button class="tab active" data-tab="html">HTML</button>
+                    <button class="tab" data-tab="css">CSS</button>
+                    <button class="tab" data-tab="js">JavaScript</button>
+                </div>
+
+                <div class="code-panel active" data-panel="html">
+<pre class="line-numbers"><code class="language-html">&lt;p id="parrafo"&gt;Texto original.&lt;/p&gt;
+&lt;button id="btn-cambiar"&gt;Cambiar texto y estilo&lt;/button&gt;
+</code></pre>
+                </div>
+
+                <div class="code-panel" data-panel="css">
+<pre class="line-numbers"><code class="language-css">.bonito{ color:#1D4ED8; font-weight:700; background:#eff6ff; padding:.25rem .35rem; border-radius:.35rem; }
+</code></pre>
+                </div>
+
+                <div class="code-panel" data-panel="js">
+<pre class="line-numbers"><code class="language-js">document.addEventListener('DOMContentLoaded', () =&gt; {
+  const p = document.getElementById('parrafo');
+  const btn = document.getElementById('btn-cambiar');
+
+  btn.addEventListener('click', () =&gt; {
+    p.textContent = '¡Nuevo texto desde JS!';
+    p.classList.toggle('bonito');
+  });
+});
+</code></pre>
+                </div>
+
+                <div class="flex gap-2 mt-3">
+                    <button class="btn run-demo"><i class="fa-solid fa-play"></i> Ejecutar demo</button>
+                    <button class="btn copy-bundle"><i class="fa-regular fa-copy"></i> Copiar HTML completo</button>
+                </div>
+                <iframe class="preview mt-3" sandbox="allow-scripts"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== PASO 4 ========== -->
+    <section id="p4" class="section rounded-xl shadow bg-white anchor">
+        <div class="p-6">
+            <h2 class="text-2xl font-semibold section-title"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Paso 4. Crear e insertar nodos</h2>
+            <div class="profe mt-3">
+                <p><strong>El profe:</strong> <code>createElement</code> crea un nodo; <code>append</code>/<code>prepend</code>/<code>before</code>/<code>after</code> lo insertan.
+                    Hagamos una lista de tareas.</p>
+            </div>
+
+            <div class="mt-4 bg-white p-4 rounded-xl shadow demo" data-demo="p4" data-preview-height="260">
+                <div class="tabbar">
+                    <button class="tab active" data-tab="html">HTML</button>
+                    <button class="tab" data-tab="css">CSS</button>
+                    <button class="tab" data-tab="js">JavaScript</button>
+                </div>
+
+                <div class="code-panel active" data-panel="html">
+<pre class="line-numbers"><code class="language-html">&lt;form id="form-tarea"&gt;
+  &lt;input id="input-tarea" placeholder="Nueva tarea..." required/&gt;
+  &lt;button&gt;Agregar&lt;/button&gt;
+&lt;/form&gt;
+&lt;ul id="tareas"&gt;&lt;/ul&gt;
+</code></pre>
+                </div>
+
+                <div class="code-panel" data-panel="css">
+<pre class="line-numbers"><code class="language-css">#tareas li{ padding:.25rem .5rem; border:1px solid #e5e7eb; border-radius:.35rem; margin:.25rem 0; }
+</code></pre>
+                </div>
+
+                <div class="code-panel" data-panel="js">
+<pre class="line-numbers"><code class="language-js">document.addEventListener('DOMContentLoaded', () =&gt; {
+  const form = document.getElementById('form-tarea');
+  const input = document.getElementById('input-tarea');
+  const lista = document.getElementById('tareas');
+
+  form.addEventListener('submit', (e) =&gt; {
+    e.preventDefault();
+    const texto = input.value.trim();
+    if(!texto) return;
+    const li = document.createElement('li');
+    li.textContent = texto;
+    lista.append(li);
+    input.value = '';
+    input.focus();
+  });
+});
+</code></pre>
+                </div>
+
+                <div class="flex gap-2 mt-3">
+                    <button class="btn run-demo"><i class="fa-solid fa-play"></i> Ejecutar demo</button>
+                    <button class="btn copy-bundle"><i class="fa-regular fa-copy"></i> Copiar HTML completo</button>
+                </div>
+                <iframe class="preview mt-3" sandbox="allow-scripts"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== PASO 5 ========== -->
+    <section id="p5" class="section rounded-xl shadow bg-white anchor">
+        <div class="p-6">
+            <h2 class="text-2xl font-semibold section-title"><i class="fa-solid fa-bolt mr-2"></i>Paso 5. Eventos básicos</h2>
+            <div class="profe mt-3">
+                <p><strong>El profe:</strong> <code>addEventListener</code> te permite reaccionar a clicks, inputs, etc. Construyamos un contador.</p>
+            </div>
+
+            <div class="mt-4 bg-white p-4 rounded-xl shadow demo" data-demo="p5" data-preview-height="220">
+                <div class="tabbar">
+                    <button class="tab active" data-tab="html">HTML</button>
+                    <button class="tab" data-tab="css">CSS</button>
+                    <button class="tab" data-tab="js">JavaScript</button>
+                </div>
+
+                <div class="code-panel active" data-panel="html">
+<pre class="line-numbers"><code class="language-html">&lt;button id="inc"&gt;+1&lt;/button&gt;
+&lt;span id="contador"&gt;0&lt;/span&gt;
+&lt;button id="reset"&gt;Reiniciar&lt;/button&gt;
+</code></pre>
+                </div>
+
+                <div class="code-panel" data-panel="css">
+<pre class="line-numbers"><code class="language-css">#contador{ font-weight:700; margin:0 .5rem; }
+</code></pre>
+                </div>
+
+                <div class="code-panel" data-panel="js">
+<pre class="line-numbers"><code class="language-js">document.addEventListener('DOMContentLoaded', () =&gt; {
+  const inc = document.getElementById('inc');
+  const reset = document.getElementById('reset');
+  const c = document.getElementById('contador');
+  let n = 0;
+
+  inc.addEventListener('click', () =&gt; { n++; c.textContent = n; });
+  reset.addEventListener('click', () =&gt; { n = 0; c.textContent = n; });
+});
+</code></pre>
+                </div>
+
+                <div class="flex gap-2 mt-3">
+                    <button class="btn run-demo"><i class="fa-solid fa-play"></i> Ejecutar demo</button>
+                    <button class="btn copy-bundle"><i class="fa-regular fa-copy"></i> Copiar HTML completo</button>
+                </div>
+                <iframe class="preview mt-3" sandbox="allow-scripts"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== PASO 6 ========== -->
+    <section id="p6" class="section rounded-xl shadow bg-white anchor">
+        <div class="p-6">
+            <h2 class="text-2xl font-semibold section-title"><i class="fa-solid fa-sitemap mr-2"></i>Paso 6. Delegación de eventos</h2>
+            <div class="profe mt-3">
+                <p><strong>El profe:</strong> Escucha un solo <em>click</em> en el contenedor y decide con <code>event.target</code>.
+                    Así los elementos nuevos también funcionan.</p>
+            </div>
+
+            <div class="mt-4 bg-white p-4 rounded-xl shadow demo" data-demo="p6" data-preview-height="260">
+                <div class="tabbar">
+                    <button class="tab active" data-tab="html">HTML</button>
+                    <button class="tab" data-tab="css">CSS</button>
+                    <button class="tab" data-tab="js">JavaScript</button>
+                </div>
+
+                <div class="code-panel active" data-panel="html">
+<pre class="line-numbers"><code class="language-html">&lt;div class="controls"&gt;
+  &lt;input id="todo-text" placeholder="Nueva tarea..."/&gt;
+  &lt;button id="todo-add"&gt;Agregar&lt;/button&gt;
+&lt;/div&gt;
+&lt;ul id="todo-list"&gt;
+  &lt;li&gt;Comprar pan&lt;/li&gt;
+  &lt;li&gt;Estudiar DOM&lt;/li&gt;
+&lt;/ul&gt;
+</code></pre>
+                </div>
+
+                <div class="code-panel" data-panel="css">
+<pre class="line-numbers"><code class="language-css">#todo-list li{ cursor:pointer; padding:.25rem .5rem; border-radius:.35rem; }
+#todo-list li.hecho{ text-decoration:line-through; background:#f3f4f6; }
+</code></pre>
+                </div>
+
+                <div class="code-panel" data-panel="js">
+<pre class="line-numbers"><code class="language-js">document.addEventListener('DOMContentLoaded', () =&gt; {
+  const list = document.getElementById('todo-list');
+  const txt = document.getElementById('todo-text');
+  const add = document.getElementById('todo-add');
+
+  list.addEventListener('click', (e) =&gt; {
+    const li = e.target.closest('li');
+    if(!li) return;
+    li.classList.toggle('hecho');
+  });
+
+  add.addEventListener('click', () =&gt; {
+    const v = txt.value.trim();
+    if(!v) return;
+    const li = document.createElement('li');
+    li.textContent = v;
+    list.append(li);
+    txt.value = '';
+    txt.focus();
+  });
+});
+</code></pre>
+                </div>
+
+                <div class="flex gap-2 mt-3">
+                    <button class="btn run-demo"><i class="fa-solid fa-play"></i> Ejecutar demo</button>
+                    <button class="btn copy-bundle"><i class="fa-regular fa-copy"></i> Copiar HTML completo</button>
+                </div>
+                <iframe class="preview mt-3" sandbox="allow-scripts"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== PASO 7 ========== -->
+    <section id="p7" class="section rounded-xl shadow bg-white anchor">
+        <div class="p-6">
+            <h2 class="text-2xl font-semibold section-title"><i class="fa-solid fa-layer-group mr-2"></i>Paso 7. &lt;template&gt; + DocumentFragment</h2>
+            <div class="profe mt-3">
+                <p><strong>El profe:</strong> Para crear muchos elementos, clona un <code>&lt;template&gt;</code> en un
+                    <code>DocumentFragment</code> y luego inserta todo junto (menos repintados, más rápido).</p>
+            </div>
+
+            <div class="mt-4 bg-white p-4 rounded-xl shadow demo" data-demo="p7" data-preview-height="280">
+                <div class="tabbar">
+                    <button class="tab active" data-tab="html">HTML</button>
+                    <button class="tab" data-tab="css">CSS</button>
+                    <button class="tab" data-tab="js">JavaScript</button>
+                </div>
+
+                <div class="code-panel active" data-panel="html">
+<pre class="line-numbers"><code class="language-html">&lt;div class="controls"&gt;
+  &lt;input id="n" type="number" min="1" value="6"/&gt;
+  &lt;button id="render"&gt;Construir tarjetas&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;div id="grid" class="grid"&gt;&lt;/div&gt;
+
+&lt;template id="tpl-card"&gt;
+  &lt;article class="card"&gt;
+    &lt;h4&gt;Card &lt;span data-slot="idx"&gt;&lt;/span&gt;&lt;/h4&gt;
+    &lt;p&gt;Descripción breve…&lt;/p&gt;
+  &lt;/article&gt;
+&lt;/template&gt;
+</code></pre>
+                </div>
+
+                <div class="code-panel" data-panel="css">
+<pre class="line-numbers"><code class="language-css">.grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:.5rem; }
+.card{ border:1px solid #e5e7eb; border-radius:.5rem; padding:.5rem; background:#fff; }
+</code></pre>
+                </div>
+
+                <div class="code-panel" data-panel="js">
+<pre class="line-numbers"><code class="language-js">document.addEventListener('DOMContentLoaded', () =&gt; {
+  const grid = document.getElementById('grid');
+  const tpl = document.getElementById('tpl-card');
+  const render = document.getElementById('render');
+  const n = document.getElementById('n');
+
+  render.addEventListener('click', () =&gt; {
+    grid.innerHTML = '';
+    const frag = document.createDocumentFragment();
+    const total = Math.max(1, Number(n.value||6));
+    for(let i=1;i&lt;=total;i++){
+      const node = tpl.content.cloneNode(true);
+      node.querySelector('[data-slot="idx"]').textContent = i;
+      frag.appendChild(node);
+    }
+    grid.appendChild(frag);
+  });
+});
+</code></pre>
+                </div>
+
+                <div class="flex gap-2 mt-3">
+                    <button class="btn run-demo"><i class="fa-solid fa-play"></i> Ejecutar demo</button>
+                    <button class="btn copy-bundle"><i class="fa-regular fa-copy"></i> Copiar HTML completo</button>
+                </div>
+                <iframe class="preview mt-3" sandbox="allow-scripts"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== BONUS ========== -->
+    <section id="bonus" class="section rounded-xl shadow bg-white anchor">
+        <div class="p-6">
+            <h2 class="text-2xl font-semibold section-title"><i class="fa-solid fa-star mr-2"></i>Bonus. IntersectionObserver (reveal al hacer scroll)</h2>
+            <div class="profe mt-3">
+                <p><strong>El profe:</strong> Con <code>IntersectionObserver</code> sabes cuándo algo entra al viewport.
+                    Ideal para efectos de “revelar” o lazy‑load.</p>
+            </div>
+
+            <div class="mt-4 bg-white p-4 rounded-xl shadow demo" data-demo="p8" data-preview-height="320">
+                <div class="tabbar">
+                    <button class="tab active" data-tab="html">HTML</button>
+                    <button class="tab" data-tab="css">CSS</button>
+                    <button class="tab" data-tab="js">JavaScript</button>
+                </div>
+
+                <div class="code-panel active" data-panel="html">
+<pre class="line-numbers"><code class="language-html">&lt;div class="scrollbox"&gt;
+  &lt;div class="caja"&gt;1&lt;/div&gt;
+  &lt;div class="caja"&gt;2&lt;/div&gt;
+  &lt;div class="caja"&gt;3&lt;/div&gt;
+  &lt;div class="caja"&gt;4&lt;/div&gt;
+  &lt;div class="caja"&gt;5&lt;/div&gt;
+  &lt;div class="caja"&gt;6&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+                </div>
+
+                <div class="code-panel" data-panel="css">
+<pre class="line-numbers"><code class="language-css">.scrollbox{ height:280px; overflow:auto; border:1px solid #e5e7eb; padding:.5rem; }
+.caja{ height:120px; margin-bottom:.5rem; background:#f3f4f6; display:flex; align-items:center; justify-content:center; border-radius:.5rem; opacity:.3; transform:translateY(8px); transition:all .35s; }
+.caja.visible{ opacity:1; background:#e0f2fe; transform:none; }
+</code></pre>
+                </div>
+
+                <div class="code-panel" data-panel="js">
+<pre class="line-numbers"><code class="language-js">document.addEventListener('DOMContentLoaded', () =&gt; {
+  const cajas = document.querySelectorAll('.caja');
+  const io = new IntersectionObserver((entries) =&gt; {
+    entries.forEach(en =&gt; en.target.classList.toggle('visible', en.isIntersecting));
+  }, { threshold: .25, root: document.querySelector('.scrollbox') });
+  cajas.forEach(c =&gt; io.observe(c));
+});
+</code></pre>
+                </div>
+
+                <div class="flex gap-2 mt-3">
+                    <button class="btn run-demo"><i class="fa-solid fa-play"></i> Ejecutar demo</button>
+                    <button class="btn copy-bundle"><i class="fa-regular fa-copy"></i> Copiar HTML completo</button>
+                </div>
+                <iframe class="preview mt-3" sandbox="allow-scripts"></iframe>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- ========================= FOOTER (igual estilo que la página anterior) ========================= -->
+<footer class="bg-gray-900 text-gray-200">
+    <div class="container mx-auto px-6 py-10 text-center">
+        <p class="text-lg font-semibold">&copy; 2025 Guía Interactiva — DOM en JavaScript</p>
+        <p class="text-sm text-gray-400 mt-1">Hecho con 💙, selectores, eventos y fragments.</p>
+        <div class="mt-3 flex justify-center space-x-4 text-xl">
+            <a class="hover:text-white" href="#p2" title="Selectores"><i class="fa-solid fa-magnifying-glass"></i></a>
+            <a class="hover:text-white" href="#p6" title="Delegación"><i class="fa-solid fa-sitemap"></i></a>
+            <a class="hover:text-white" href="#p7" title="Templates + Fragment"><i class="fa-solid fa-layer-group"></i></a>
+        </div>
+    </div>
+</footer>
+
+<!-- Prism core + lenguajes -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+<!-- Lógica de tabs, ejecutar demo y copiar bundle -->
+<script>
+    // Tabs (HTML / CSS / JS)
+    document.addEventListener('click', (e)=>{
+        const btn = e.target.closest('.tab');
+        if(!btn) return;
+        const demo = btn.closest('.demo');
+        const tab = btn.dataset.tab;
+        demo.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b === btn));
+        demo.querySelectorAll('.code-panel').forEach(p => p.classList.toggle('active', p.dataset.panel === tab));
+    });
+
+    // Ejecutar demo: compone un HTML con CSS+JS y lo carga en el iframe (srcdoc)
+    function buildBundle(demoEl){
+        const get = sel => (demoEl.querySelector(sel)?.innerText ?? '').trim();
+        const H = get('code.language-html');
+        const C = get('code.language-css');
+        const J = get('code.language-js');
+
+        const doc = `<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<style>${C}</style>
+</head><body>
+${H}
+<script>
+${J}
+//# sourceURL=demo.js
+</` + `script>
+</body></html>`;
+        return doc;
+    }
+
+    document.addEventListener('click', (e)=>{
+        const run = e.target.closest('.run-demo');
+        if(!run) return;
+        const demo = run.closest('.demo');
+        const bundle = buildBundle(demo);
+        const iframe = demo.querySelector('iframe.preview');
+        const customH = demo.getAttribute('data-preview-height');
+        if(customH) iframe.style.height = customH + 'px';
+        iframe.srcdoc = bundle;
+    });
+
+    // Copiar el HTML completo del bundle (HTML+CSS+JS)
+    document.addEventListener('click', async (e)=>{
+        const copy = e.target.closest('.copy-bundle');
+        if(!copy) return;
+        const demo = copy.closest('.demo');
+        const bundle = buildBundle(demo);
+        try{
+            await navigator.clipboard.writeText(bundle);
+            const old = copy.innerHTML;
+            copy.innerHTML = '<i class="fa-solid fa-check"></i> ¡Copiado!';
+            setTimeout(()=> copy.innerHTML = old, 1500);
+        }catch(err){
+            alert('No se pudo copiar. Prueba manualmente.');
+        }
+    });
+</script>
+</body>
+</html>
